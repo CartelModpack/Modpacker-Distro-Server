@@ -12,17 +12,20 @@ router.use((_req, res) => {
         .parse(md, { async: true })
         .then((dom) => {
           res.render("md", {
+            title: "Modpacker Distro Server",
             markdown: DOMPurify.sanitize(dom),
           });
         })
         .catch((error) => {
           res.render("md", {
+            title: "Error",
             markdown: error.message,
           });
         });
     })
     .catch((error: Error) => {
       res.render("md", {
+        title: "Error",
         markdown: error.message,
       });
     });

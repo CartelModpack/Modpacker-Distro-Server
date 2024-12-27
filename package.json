@@ -1,5 +1,5 @@
 {
-  "name": "Modpack-Distro-Server",
+  "name": "Modpacker-Distro-Server",
   "version": "1.0.0",
   "description": "A host/admin panel to manage your Modpack and distribute updates to your users.",
   "main": "./dist/ts/app.js",
