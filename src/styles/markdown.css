@@ -1,0 +1,44 @@
+@tailwind base;
+
+@layer base {
+  .markdown * {
+    @apply transition-all;
+  }
+
+  .markdown p,
+  .markdown h1,
+  .markdown h2,
+  .markdown h3,
+  .markdown h4,
+  .markdown h5,
+  .markdown h6,
+  .markdown hr,
+  .markdown img {
+    @apply mb-3;
+  }
+
+  .markdown h1 {
+    @apply text-3xl;
+  }
+
+  .markdown h2 {
+    @apply text-2xl;
+  }
+
+  .markdown h3 {
+    @apply text-xl;
+  }
+
+  .markdown h4 {
+    @apply text-lg;
+  }
+
+  .markdown h5,
+  .markdown p {
+    @apply text-base text-slate-800;
+  }
+
+  .markdown a {
+    @apply text-accent-light hover:underline hover:underline-offset-2 hover:text-accent;
+  }
+}
