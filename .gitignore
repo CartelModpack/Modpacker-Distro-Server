@@ -129,5 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Tailwind
+web/public/css/
+
 # Pkg builds
 bin/

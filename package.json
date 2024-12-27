@@ -10,6 +10,7 @@
   "private": true,
   "pkg": {
     "outputPath": "./bin",
+    "assets": "./web/**/*",
     "targets": [
       "latest-linux",
       "latest-macos",
