@@ -1,18 +1,11 @@
 @tailwind base;
 
 @layer base {
-  .markdown * {
-    @apply transition-all;
+  .markdown-container {
+    @apply flex flex-col justify-center p-4 my-5 lg:my-10 w-full md:w-5/6 lg:w-2/3;
   }
 
-  .markdown p,
-  .markdown h1,
-  .markdown h2,
-  .markdown h3,
-  .markdown h4,
-  .markdown h5,
-  .markdown hr,
-  .markdown img {
+  .markdown * {
     @apply mb-3;
   }
 
@@ -20,7 +13,7 @@
   .markdown h2,
   .markdown h3,
   .markdown h4,
-  .markdown h6 {
+  .markdown h5 {
     @apply text-accent font-semibold font-mono;
   }
 
@@ -42,7 +35,15 @@
 
   .markdown h5,
   .markdown p {
-    @apply text-base text-slate-800;
+    @apply text-base;
+  }
+
+  .markdown p {
+    @apply dark:text-slate-100;
+  }
+
+  .markdown hr {
+    @apply dark:decoration-slate-400;
   }
 
   .markdown a {
