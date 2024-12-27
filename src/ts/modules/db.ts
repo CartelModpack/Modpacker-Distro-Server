@@ -1,7 +1,7 @@
 import Database from "@gavinhsmith/simpledatabase";
 import { TableColumnSettings } from "@gavinhsmith/simpledatabase/types/DatabaseTypes.js";
 import { join } from "path";
-import dbConfig from "../../db.config.json" with {type: "json"};
+import dbConfig from "../../../db.config.json" with {type: "json"};
 
 let tables = <string[]>dbConfig.tables;
 let configs = <TableColumnSettings[][]>dbConfig.configs;

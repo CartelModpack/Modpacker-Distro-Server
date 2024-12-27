@@ -3,7 +3,7 @@ import express from "express";
 import { engine } from "express-handlebars";
 import http from "http";
 import { join } from "path";
-import { loadDatabase } from "./db.js";
+import { loadDatabase } from "./modules/db.js";
 import routerMaster from "./routes/master.js";
 import config from "./modules/config.js";
 
