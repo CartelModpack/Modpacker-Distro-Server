@@ -132,5 +132,8 @@ dist
 # Tailwind
 web/public/css/
 
+# Databases
+*.db
+
 # Pkg builds
 bin/

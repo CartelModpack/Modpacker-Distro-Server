@@ -7,17 +7,9 @@
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
   "private": true,
-  "pkg": {
-    "outputPath": "./bin",
-    "assets": "./web/**/*",
-    "targets": [
-      "latest-linux",
-      "latest-macos",
-      "latest-win"
-    ]
-  },
+  "type": "module",
   "dependencies": {
-    "@gavinhsmith/simpledatabase": "^1.0.5",
+    "@gavinhsmith/simpledatabase": "^1.0.10",
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
     "formidable": "^3.5.2"
@@ -29,7 +21,6 @@
     "cssnano": "^7.0.6",
     "nodemon": "^3.1.9",
     "npm-run-all": "^4.1.5",
-    "pkg": "^5.8.1",
     "postcss": "^8.4.49",
     "postcss-cli": "^11.0.0",
     "rimraf": "^6.0.1",
@@ -37,14 +28,12 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "clean": "rimraf ./dist ./bin ./web/public/css",
+    "clean": "rimraf ./dist ./web/public/css",
     "ts:build": "tsc",
     "ts:watch": "tsc --watch",
     "postcss:build": "postcss --verbose ./src/styles -d ./web/public/css",
     "postcss:watch": "postcss --verbose ./src/styles -d ./web/public/css --watch",
     "build": "npm-run-all clean ts:build postcss:build --print-label",
-    "prepack": "npm-run-all build --print-label",
-    "pack": "pkg .",
     "dev:launch": "nodemon .",
     "dev": "npm-run-all build --parallel ts:watch postcss:watch dev:launch --print-label",
     "start": "node ."
