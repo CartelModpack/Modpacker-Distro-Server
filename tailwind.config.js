@@ -2,6 +2,7 @@ export default {
   content: [
     "./web/views/**/*.{hbs,html}",
     "./web/public/js/*.{js,cjs}",
+    "./web/md/**/*.md",
     "./src/styles/**/*.css",
     "./README.md",
   ],
