@@ -3,6 +3,7 @@ export default {
     "./web/views/**/*.{hbs,html}",
     "./web/public/js/*.{js,cjs}",
     "./src/styles/**/*.css",
+    "./README.md",
   ],
   theme: {
     extend: {
