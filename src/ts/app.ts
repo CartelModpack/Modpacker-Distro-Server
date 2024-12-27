@@ -3,7 +3,8 @@ import express from "express";
 import { engine } from "express-handlebars";
 import http from "http";
 import { join } from "path";
-import db, { loadDatabase } from "./db.js";
+import { loadDatabase } from "./db.js";
+import routerMaster from "./routes/master.js";
 
 // Load DB
 await loadDatabase();
@@ -28,9 +29,7 @@ app.set("view engine", "hbs");
 app.set("views", join(process.cwd(), "./web/views"));
 app.use(express.static(join(process.cwd(), "./web/public")));
 
-app.use((_req, res) => {
-  res.render("default");
-});
+app.use(routerMaster);
 
 // Start server
 server.listen(8080, () => {
