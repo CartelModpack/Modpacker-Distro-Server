@@ -1,0 +1,44 @@
+{
+  "tables": [
+    "user_auth",
+    "user_token",
+    "user_data",
+    "mods",
+    "resource_packs",
+    "shader_packs",
+    "config_files"
+  ],
+  "configs": [
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "user", "type": "TEXT" },
+      { "name": "hash", "type": "TEXT" }
+    ],
+    [
+      { "name": "token", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "user", "type": "TEXT" },
+      { "name": "expires", "type": "TEXT" }
+    ],
+    [
+      { "name": "user", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "name", "type": "TEXT" },
+      { "name": "email", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "version", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "version", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "version", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "version", "type": "TEXT" }
+    ]
+  ]
+}

@@ -3,36 +3,10 @@ import express from "express";
 import { engine } from "express-handlebars";
 import http from "http";
 import { join } from "path";
-import Database from "@gavinhsmith/simpledatabase";
+import db, { loadDatabase } from "./db.js";
 
-// Initiate Database
-const db = new Database(join(process.cwd(), "database.db"));
-
-console.info("Loading database...");
-db.exists("users")
-  .then(() => {
-    console.info("Loaded table 'users'");
-  })
-  .catch(() => {
-    console.info("Creating table 'users'...");
-    db.create("users", [
-      {
-        name: "id",
-        type: "INTENGER",
-        isPrimaryKey: true,
-      },
-      {
-        name: "username",
-        type: "TEXT",
-      },
-      {
-        name: "password",
-        type: "TEXT",
-      },
-    ]).then(() => {
-      console.info("Created table 'users'");
-    });
-  });
+// Load DB
+await loadDatabase();
 
 // Initiate server
 console.info("Starting server...");

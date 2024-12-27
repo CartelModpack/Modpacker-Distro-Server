@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "rootDir": "src/ts/",
-    "outDir": "dist/",
+    "outDir": "dist/ts/",
     "module": "NodeNext",
     "resolveJsonModule": true,
     "esModuleInterop": true
