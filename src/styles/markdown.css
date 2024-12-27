@@ -11,10 +11,17 @@
   .markdown h3,
   .markdown h4,
   .markdown h5,
-  .markdown h6,
   .markdown hr,
   .markdown img {
     @apply mb-3;
+  }
+
+  .markdown h1,
+  .markdown h2,
+  .markdown h3,
+  .markdown h4,
+  .markdown h6 {
+    @apply text-accent font-semibold font-mono;
   }
 
   .markdown h1 {
