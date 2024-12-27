@@ -8,6 +8,8 @@ const app = express();
 const server = http.createServer(app);
 
 // Start server
-server.listen(8080, () => {
-  console.info("Server started at *:8080");
-});
+export default function launchApp() {
+  server.listen(8080, () => {
+    console.info("Server started at *:8080");
+  });
+}
