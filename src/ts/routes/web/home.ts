@@ -1,29 +1,17 @@
 import { Router } from "express";
-import { readFile } from "fs/promises";
-import DOMPurify from "isomorphic-dompurify";
-import { marked } from "marked";
 import { join } from "path";
+import sendMarkdown from "../../modules/markdown.js";
 export const router = Router();
 
 router.get("/", (_req, res) => {
-  readFile(join(process.cwd(), "./README.md"), "utf-8")
+  sendMarkdown(join(process.cwd(), "./README.md"))
     .then((md) => {
-      marked
-        .parse(md, { async: true })
-        .then((dom) => {
-          res.render("md", {
-            title: "Modpacker Distro Server",
-            markdown: DOMPurify.sanitize(dom),
-          });
-        })
-        .catch((error) => {
-          res.render("md", {
-            title: "Error",
-            markdown: error.message,
-          });
-        });
+      res.render("md", {
+        title: "Modpacker Distro Server",
+        markdown: md,
+      });
     })
-    .catch((error: Error) => {
+    .catch((error) => {
       res.render("md", {
         title: "Error",
         markdown: error.message,
