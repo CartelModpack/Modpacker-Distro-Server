@@ -15,11 +15,13 @@ app.engine(
   engine({
     extname: ".hbs",
     defaultLayout: "main",
+    layoutsDir: join(__dirname, "../web/views/layouts"),
+    partialsDir: join(__dirname, "../web/views/partials"),
   })
 );
 app.set("view engine", "hbs");
-app.set("views", join(process.cwd(), "./web/views"));
-app.use(express.static(join(process.cwd(), "./web/public")));
+app.set("views", join(__dirname, "../web/views"));
+app.use(express.static(join(__dirname, "../web/public")));
 
 app.use((_req, res) => {
   res.render("default");

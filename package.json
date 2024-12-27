@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A host/admin panel to manage your Modpack and distribute updates to your users.",
   "main": "./dist/app.js",
-  "bin": "./dist/app.js",
   "repository": "https://github.com/CartelModpack/Modpack-Distro-Server.git",
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
