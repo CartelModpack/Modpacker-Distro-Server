@@ -8,7 +8,7 @@ import routerMaster from "./routes/master.js";
 import config from "./modules/config.js";
 import cookieParser from "cookie-parser";
 import { processAuthToken } from "./routes/middleware/auth.js";
-import processError from "./routes/middleware/error.js";
+import processWebError from "./routes/middleware/error.js";
 
 // Load DB
 await loadDatabase();
@@ -41,7 +41,7 @@ app.use(processAuthToken);
 app.use(routerMaster);
 
 // Errors
-app.use(processError);
+app.use(processWebError);
 
 // Start server
 server.listen(config.port, () => {

@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import sendMarkdown from "./markdown.js";
 import errorMessages from "../../../../config/error.config.json" with {type: "json"};
+import { sendAPIError } from "./api.js";
 
 // Types
 export interface WebErrorData {
@@ -22,7 +23,7 @@ for (let status of statusCodes) {
 }
 
 // Helper Functions
-function processWebError(webError: WebError, req: Request): WebErrorData {
+function cleanWebError(webError: WebError, req: Request): WebErrorData {
   if (typeof webError === "number") {
     let message = ERROR_MESSAGES.get(webError)(req);
     let error = new Error(message);
@@ -47,6 +48,8 @@ function errorTemplate(error: WebErrorData) {
 }
 
 // Exports
+
+/** Processes a Promise rejection as a web error. */
 export function sendPromiseCatchError(
   status: WebError,
   req: Request,
@@ -54,19 +57,31 @@ export function sendPromiseCatchError(
   next: WebErrorNextFunction
 ): (err?: any) => void {
   return (err?: any) => {
-    let webError = processWebError(status, req);
+    let webError = cleanWebError(status, req);
     webError.error = err instanceof Error ? err : new Error(err);
     next(webError);
   };
 }
 
-export default function processError(
+/** Renders errors to the client in API form. */
+export function processAPIError(
   err: WebError,
   req: Request,
   res: Response,
   _next: NextFunction
-) {
-  let error = processWebError(err, req);
+): void {
+  let error = cleanWebError(err, req);
+  sendAPIError(error, res);
+}
+
+/** Renders errors to the client in web form. */
+export default function processWebError(
+  err: WebError,
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): void {
+  let error = cleanWebError(err, req);
   let rawMD = errorTemplate(error);
   res.status(error.status);
   sendMarkdown(rawMD, false)

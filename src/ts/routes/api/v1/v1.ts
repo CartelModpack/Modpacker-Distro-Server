@@ -1,23 +1,16 @@
+// Imports
+import { processAPIError } from "../../middleware/error.js";
+import routerAPIPing from "./meta/ping.js";
+
 // Router
 import { Router } from "express";
 export const router = Router();
 
-function getTimeNow() {
-  return new Date().toUTCString();
-}
+// Routes
+router.use("/ping", routerAPIPing);
 
-router.get("/", (req, res) => {
-  res.status(200);
-  res.header({ "Content-Type": "application/json" });
-  res.write(
-    JSON.stringify({
-      status: 200,
-      time: getTimeNow(),
-      message: "APIv1 is working.",
-    })
-  );
-  res.end();
-});
+// Process API errors.
+router.use("*", processAPIError);
 
 // Export
 export default router;
