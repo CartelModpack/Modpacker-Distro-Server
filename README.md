@@ -7,7 +7,7 @@ A host/admin panel to manage your Modpack and distribute updates to your users.
   <img alt="License" src="https://img.shields.io/github/license/CartelModpack/Modpacker-Distro-Server?style=flat-square">
 </div>
 
-Created by [@CartelModpack](https://github.com/CartelModpack)
+Created by [@CartelModpack](https://github.com/CartelModpack). Build with [TailwindCSS](https://tailwindcss.com/), [Handlebars](https://handlebarsjs.com/), [TypeScript](https://www.typescriptlang.org/), and [NodeJS](https://nodejs.org/).
 
 ---
 

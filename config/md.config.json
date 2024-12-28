@@ -2,7 +2,7 @@
   "overrides": [
     {
       "name": "link",
-      "render": "<a class=\"link\" href=\"{href}\">{text}</a>"
+      "render": "<a class=\"link\" href=\"{href}\" /C{,target=\"{_blank}\",href=#}/E >{text}</a>"
     }
   ]
 }

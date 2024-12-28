@@ -1,6 +1,5 @@
 import { readFile } from "fs/promises";
 import { marked, MarkedExtension, Token } from "marked";
-import DOMPurify from "isomorphic-dompurify";
 import mdConfig from "../../../../config/md.config.json" with {type: "json"};
 
 let newConfig: MarkedExtension = {
@@ -12,6 +11,21 @@ for (let override of mdConfig.overrides) {
     renderer: (token: Token) => {
       let keys = Object.keys(token);
       let out = override.render;
+
+      let conditionals: number[] = [];
+      let i = 0;
+      while (out.slice(i).indexOf("/C{") != -1) {
+        conditionals.push(out.slice(i).indexOf("/C{"));
+        i = out.slice(i).indexOf("/C{") + 1;
+      }
+      for (let cond of conditionals) {
+        let total = out.slice(cond, out.indexOf("}/E", cond+3)+3)
+        let raw = out.slice(cond+3, out.indexOf("}/E", cond+3));
+        let [ifTrue,ifFalse,rawCondition] = raw.split(",");
+        let condition = rawCondition.split("=");
+        out = out.replaceAll(total, (token[condition[0]] == condition[1]) ? ifTrue : ifFalse);
+      };
+
       for (let key of keys) {
         if (typeof token[key] === "object") {
           out = out.replaceAll(`{${key}}`, JSON.stringify(token[key]));
@@ -32,7 +46,7 @@ export function parseMarkdown(content: string): Promise<string> {
         async: true,
       })
       .then((dom) => {
-        resolve(DOMPurify.sanitize(dom));
+        resolve(dom);
       })
       .catch(reject);
   });
