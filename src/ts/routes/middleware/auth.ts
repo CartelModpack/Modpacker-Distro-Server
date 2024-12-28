@@ -80,11 +80,18 @@ function verifyAccount(
 }
 
 /** Generates a session cookie */
-function generateSession(username: string): AuthTokenData {
+function generateSession(
+  username: string,
+  stay_logged_in: boolean
+): AuthTokenData {
+  let expire_time: number = stay_logged_in
+    ? 14 * 24 * 60 * 60 * 1000 // 2 weeks
+    : 60 * 60 * 1000; // 1 hour
+
   return {
     username,
     token: calculateHash(new Date().toISOString(), "sha512"),
-    expires: getRelativeDate(14 * 24 * 60 * 60 * 1000).toISOString(), // 2 weeks
+    expires: getRelativeDate(expire_time).toISOString(),
   };
 }
 
@@ -172,7 +179,7 @@ export function processLoginAttempt(
               found = true;
 
               // Create session.
-              let session = generateSession(acc.username);
+              let session = generateSession(acc.username, incoming.remember_me);
 
               db.table<AuthTokenData>("user_auth_tokens")
                 .add(session)
