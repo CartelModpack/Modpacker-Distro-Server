@@ -198,4 +198,19 @@ export function processLoginAttempt(
     .catch(sendPromiseCatchError(500, req, res, next));
 }
 
-export function processLogout(req: Request, res: Response) {}
+/** Process a logout. */
+export function processLogout(req: Request, res: Response) {
+  if (req.auth.loggedIn) {
+    res.clearCookie("Auth-Token"); // Clear user cookie.
+    db.table<AuthTokenData>("user_auth_tokens") // Clear token from db.
+      .delete("token", req.auth.session.token)
+      .then(() => {
+        res.redirect("/auth/login");
+      })
+      .catch(() => {
+        res.redirect("/auth/login");
+      });
+  } else {
+    res.redirect("/auth/login");
+  }
+}

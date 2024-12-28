@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { processLoginAttempt } from "../middleware/auth.js";
+import { processLoginAttempt, processLogout } from "../middleware/auth.js";
 export const router = Router();
 
 router.get("/login", (req, res, _next) => {
@@ -14,5 +14,6 @@ router.get("/login", (req, res, _next) => {
 });
 
 router.post("/login", processLoginAttempt);
+router.get("/logout", processLogout);
 
 export default router;
