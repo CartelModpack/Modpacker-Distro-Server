@@ -9,6 +9,9 @@ export const router = Router();
 
 // API v1
 router.use("/api/v1", routerAPIv1);
+router.get("/api", (_req, res) => {
+  res.redirect("/docs");
+});
 
 // Web Routes
 router.use("/docs", routerWebDocs);
