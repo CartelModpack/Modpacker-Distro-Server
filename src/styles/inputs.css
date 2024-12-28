@@ -6,7 +6,7 @@
   }
 
   .button {
-    @apply text-white px-4 py-2 bg-accent-light hover:bg-accent;
+    @apply font-bold text-white px-4 py-2 bg-accent-light hover:bg-accent;
   }
 
   .input-text {
