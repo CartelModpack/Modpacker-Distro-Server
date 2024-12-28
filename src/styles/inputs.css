@@ -1,0 +1,15 @@
+@tailwind base;
+
+@layer base {
+  .link {
+    @apply text-accent-light hover:text-accent hover:underline underline-offset-2;
+  }
+
+  .button {
+    @apply text-white px-4 py-2 bg-accent-light hover:bg-accent;
+  }
+
+  .text-input {
+    @apply outline-none p-1 font-mono text-xl border-2 border-slate-300 hover:underline;
+  }
+}

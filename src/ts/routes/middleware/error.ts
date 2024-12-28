@@ -73,7 +73,7 @@ export default function processError(
     .then((md) => {
       res.render("markdown", {
         title: `Error ${error.status}`,
-        markdown: md,
+        content: md,
       });
     })
     .catch(() => {

@@ -2,10 +2,8 @@
 import { NextFunction, Request, Response } from "express";
 import db from "../../modules/db.js";
 import { sendPromiseCatchError, WebErrorNextFunction } from "./error.js";
-import formidable from "formidable";
-
-// Form handler.
-const form = formidable({});
+import formidable, { Fields } from "formidable";
+import { createHash } from "crypto";
 
 // Modify express requests to allow auth data.
 declare global {
@@ -30,10 +28,18 @@ export interface AuthTokenData {
   username: string;
   expires: string;
 }
-export interface AuthUserAccounts {
+export interface AuthUserAccount {
   username: string;
   hash: string;
 }
+export interface AuthUserFormData {
+  username: string;
+  password: string;
+  remember_me: boolean;
+}
+export type AuthUserHashType = "sha1" | "sha256" | "sha512";
+
+// Helper Functions
 
 /** Checks if a date is not expired. */
 function checkExpiration(expires: Date): boolean {
@@ -43,10 +49,40 @@ function checkExpiration(expires: Date): boolean {
 function getRelativeDate(ms: number): Date {
   return new Date(new Date().getTime() + ms);
 }
+/** Turn the formidable `fields` property into something easier to use. */
+function makeAuthFormDataReadable(fields: Fields<string>): AuthUserFormData {
+  let remember_me: boolean =
+    fields.remember_me != null && fields.remember_me[0] === "on";
+  return {
+    username: fields.username[0],
+    password: fields.password[0],
+    remember_me,
+  };
+}
+/** Calculate a hash */
+function calculateHash(password: string, type: AuthUserHashType): string {
+  return createHash(type).update(password, "utf8").digest("hex");
+}
+/** Checks if an account is valid. */
+function verifyAccount(
+  incoming: AuthUserFormData,
+  existing: AuthUserAccount
+): boolean {
+  let hash = calculateHash(incoming.password, "sha512");
+  return incoming.username === existing.username && hash === existing.hash;
+}
+/** Generates a session cookie */
+function generateSession(username: string): AuthTokenData {
+  return {
+    username,
+    token: calculateHash(new Date().toISOString(), "sha512"),
+    expires: getRelativeDate(14 * 24 * 60 * 60 * 1000).toISOString(), // 2 weeks
+  };
+}
 
-/**
- * Express middleware to check for authentication.
- */
+// Exports
+
+/** Express middleware to check for authentication. */
 export function processAuthToken(
   req: Request,
   res: Response,
@@ -66,7 +102,7 @@ export function processAuthToken(
           if (
             // Checks if a cookie matches a token and it is not expired, then sets the session.
             token.token === cookie.token &&
-            checkExpiration(new Date(cookie.expires))
+            checkExpiration(new Date(token.expires))
           ) {
             req.loggedIn = true;
             req.session = cookie;
@@ -74,7 +110,7 @@ export function processAuthToken(
           } else if (
             // Checks if a cookie matches a token and it is expired, then clears the cookie and token.
             token.token === cookie.token &&
-            !checkExpiration(new Date(cookie.expires))
+            !checkExpiration(new Date(token.expires))
           ) {
             res.clearCookie("Auth-Token"); // Clear user cookie.
             db.table<AuthTokenData>("user_auth_tokens") // Clear token from db.
@@ -94,20 +130,44 @@ export function processAuthToken(
   }
 }
 
+/** Process a login attempt. */
 export function processLoginAttempt(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
+  // Form handler.
+  const form = formidable({});
+
+  // Process form data.
   form
     .parse(req)
-    .then(([fields]) => {
-      db.table<AuthUserAccounts>("user_accounts")
+    .then(([rawFields]) => {
+      let incoming = makeAuthFormDataReadable(rawFields);
+
+      // Get all account auth data.
+      db.table<AuthUserAccount>("user_accounts")
         .allEntries()
         .then((accs) => {
-          console.info(fields);
-          console.info(accs);
-          sendPromiseCatchError(200, req, res, next)();
+          // Find the account we want.
+          let found = false;
+          for (let acc of accs) {
+            // Verify acc
+            if (verifyAccount(incoming, acc)) {
+              found = true;
+              // Create session.
+              let session = generateSession(acc.username);
+              db.table<AuthTokenData>("user_auth_tokens")
+                .add(session)
+                .then(() => {
+                  res.cookie("Auth-Token", JSON.stringify(session));
+                  res.redirect("/");
+                })
+                .catch(sendPromiseCatchError(500, req, res, next));
+            }
+          }
+          // Return to login if failed.
+          if (!found) res.redirect("/auth/login");
         })
         .catch(sendPromiseCatchError(500, req, res, next));
     })

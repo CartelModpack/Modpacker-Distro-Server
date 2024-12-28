@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { processLoginAttempt } from "../middleware/auth.js";
 export const router = Router();
 
 router.get("/login", (_req, res, _next) => {
@@ -6,5 +7,7 @@ router.get("/login", (_req, res, _next) => {
     title: "Modpacker Distro Server Login",
   });
 });
+
+router.post("/login", processLoginAttempt);
 
 export default router;

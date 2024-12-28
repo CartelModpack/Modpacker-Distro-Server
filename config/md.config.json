@@ -1,0 +1,8 @@
+{
+  "overrides": [
+    {
+      "name": "link",
+      "render": "<a class=\"link\" href=\"{href}\">{text}</a>"
+    }
+  ]
+}

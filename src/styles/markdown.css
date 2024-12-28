@@ -45,8 +45,4 @@
   .markdown hr {
     @apply dark:decoration-slate-400;
   }
-
-  .markdown a {
-    @apply text-accent-light hover:underline hover:underline-offset-2 hover:text-accent;
-  }
 }

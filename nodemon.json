@@ -1,5 +1,5 @@
 {
-  "watch": ["dist/", ".env"],
+  "watch": ["dist/", ".env", "config/"],
   "ext": "js,mjs,cjs,json,env",
   "signal": "SIGTERM"
 }
