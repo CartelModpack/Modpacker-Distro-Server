@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { join } from "path";
-import sendMarkdown from "../../modules/markdown.js";
+import sendMarkdown from "../middleware/markdown.js";
 export const router = Router();
 
 router.get("/", (_req, res) => {

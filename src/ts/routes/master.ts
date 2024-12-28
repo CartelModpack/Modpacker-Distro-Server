@@ -17,5 +17,10 @@ router.get("/api", (_req, res) => {
 router.use("/docs", routerWebDocs);
 router.use("/", routerWebHome);
 
+// No further routes, send 404;
+router.use("*", function (_req, _res, next) {
+  next(404);
+});
+
 // Export
 export default router;

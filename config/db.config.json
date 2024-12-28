@@ -1,0 +1,58 @@
+{
+  "version": 0,
+  "tables": [
+    "mds_data",
+    "user_accounts",
+    "user_auth_tokens",
+    "user_data",
+    "mods",
+    "resource_packs",
+    "shader_packs",
+    "config_files"
+  ],
+  "configs": [
+    [
+      { "name": "key", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "value", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "username", "type": "TEXT" },
+      { "name": "hash", "type": "TEXT" }
+    ],
+    [
+      { "name": "token", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "username", "type": "TEXT" },
+      { "name": "expires", "type": "TEXT" }
+    ],
+    [
+      { "name": "username", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "name", "type": "TEXT" },
+      { "name": "email", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "versions", "type": "TEXT" },
+      { "name": "project_id", "type": "TEXT" },
+      { "name": "project_name", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "versions", "type": "TEXT" },
+      { "name": "project_id", "type": "TEXT" },
+      { "name": "project_name", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "versions", "type": "TEXT" },
+      { "name": "project_id", "type": "TEXT" },
+      { "name": "project_name", "type": "TEXT" }
+    ],
+    [
+      { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
+      { "name": "versions", "type": "TEXT" },
+      { "name": "project_id", "type": "TEXT" },
+      { "name": "project_name", "type": "TEXT" }
+    ]
+  ]
+}
