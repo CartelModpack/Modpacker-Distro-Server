@@ -1,4 +1,4 @@
-import { WebErrorData } from "./error.js";
+import { WebErrorData, WebErrorNextFunction } from "./error.js";
 import { Response } from "express";
 
 // Method Exports
@@ -15,6 +15,6 @@ export function sendAPIResponse(
 }
 
 /** Send an API error. */
-export function sendAPIError(error: WebErrorData, res: Response) {
-  sendAPIResponse(error, res, error.status);
+export function sendAPIError(error: WebErrorData, next: WebErrorNextFunction) {
+  next(error);
 }

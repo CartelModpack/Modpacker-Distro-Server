@@ -11,7 +11,7 @@ function getTimeNow(): string {
 }
 
 // Main route.
-router.get("/", (req, res) => {
+router.get("/", (_req, res) => {
   sendAPIResponse(
     {
       time: getTimeNow(),

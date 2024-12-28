@@ -2,13 +2,13 @@
 import { Request, Response, NextFunction } from "express";
 import sendMarkdown from "./markdown.js";
 import errorMessages from "../../../../config/error.config.json" with {type: "json"};
-import { sendAPIError } from "./api.js";
+import { sendAPIError, sendAPIResponse } from "./api.js";
 
 // Types
 export interface WebErrorData {
   status: number;
   message?: string;
-  error?: Error;
+  error?: Object;
 }
 export type WebError = WebErrorData | number;
 export type WebErrorNextFunction = (error?: WebError) => void;
@@ -23,10 +23,12 @@ for (let status of statusCodes) {
 }
 
 // Helper Functions
+
+/** "Cleans" a WebError to fit the WebErrorData interface. */
 function cleanWebError(webError: WebError, req: Request): WebErrorData {
   if (typeof webError === "number") {
     let message = ERROR_MESSAGES.get(webError)(req);
-    let error = new Error(message);
+    let error = objectifyError(new Error(message));
     return {
       status: webError,
       message,
@@ -38,13 +40,19 @@ function cleanWebError(webError: WebError, req: Request): WebErrorData {
         ? webError.message
         : ERROR_MESSAGES.get(webError.status)(req);
     webError.error =
-      webError.error != null ? webError.error : new Error(webError.message);
+      webError.error != null ? (webError.error instanceof Error ? objectifyError(webError.error) : webError.error) : objectifyError(new Error(webError.message));
     return webError;
   }
 }
 
+/** Converts a WebError to markdown. */
 function errorTemplate(error: WebErrorData) {
   return `# ${error.status}\n\n${error.message}`;
+}
+
+/** Turns an error into an object. */
+function objectifyError(error: Error): Object {
+  return JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
 }
 
 // Exports
@@ -71,7 +79,8 @@ export function processAPIError(
   _next: NextFunction
 ): void {
   let error = cleanWebError(err, req);
-  sendAPIError(error, res);
+  console.info(error);
+  sendAPIResponse(error, res, error.status);
 }
 
 /** Renders errors to the client in web form. */
