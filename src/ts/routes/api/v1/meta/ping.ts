@@ -6,7 +6,7 @@ export const router = Router();
 // Helper Functions
 
 /** Gets the current time as UTC. */
-function getTimeNow() {
+function getTimeNow(): string {
   return new Date().toUTCString();
 }
 
