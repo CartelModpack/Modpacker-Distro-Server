@@ -9,7 +9,11 @@
     @apply text-white px-4 py-2 bg-accent-light hover:bg-accent;
   }
 
-  .text-input {
-    @apply outline-none p-1 font-mono text-xl border-2 border-slate-300 hover:underline;
+  .input-text {
+    @apply outline-none border-2 border-slate-300 hover:underline p-1 font-mono text-xl;
+  }
+
+  .checkbox {
+    @apply h-5 w-5 cursor-pointer border-2 transition-all appearance-none border-slate-300 checked:bg-accent-light checked:border-accent-light;
   }
 }

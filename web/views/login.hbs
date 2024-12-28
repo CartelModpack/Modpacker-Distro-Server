@@ -1,25 +1,31 @@
 <form action="/auth/login" method="post">
   <div class="flex justify-center">
-    <div class="flex flex-col items-center [&>*]:mb-2">
-      <h1>Login</h1>
+    <div class="flex flex-col items-center">
+      <h1 class="mb-2">Login</h1>
       <input
-        class="text-input"
+        class="input-text mb-2"
         placeholder="Username"
         type="text"
         name="username"
         id="username"
       />
       <input
-        class="text-input"
+        class="input-text mb-2"
         placeholder="Password"
         type="password"
         name="password"
         id="password"
       />
-      <p>
-        <input type="checkbox" name="remember_me" id="remember_me" />
-        Remember Me
-      </p>
+
+      <div class="flex flex-row items-center mb-2">
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="remember_me"
+          name="remember_me"
+        />
+        <span class="ml-2">Remember Me</span>
+      </div>
       <button class="button" type="submit">Submit</button>
     </div>
   </div>

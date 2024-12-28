@@ -10,7 +10,6 @@ for (let override of mdConfig.overrides) {
   newConfig.extensions.push({
     name: override.name,
     renderer: (token: Token) => {
-      console.info(`Rendering override for type "${override.name}" was triggered.`);
       let keys = Object.keys(token);
       let out = override.render;
       for (let key of keys) {
