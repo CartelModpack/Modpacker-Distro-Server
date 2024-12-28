@@ -1,6 +1,7 @@
 // Imports
 import { Request, Response, NextFunction } from "express";
 import sendMarkdown from "./markdown.js";
+import errorMessages from "../../../../config/error.config.json" with {type: "json"};
 
 // Types
 export interface WebErrorData {
@@ -13,22 +14,15 @@ export type WebErrorNextFunction = (error?: WebError) => void;
 
 // Defaults
 export const ERROR_MESSAGES = new Map<number, (req: Request) => string>();
-ERROR_MESSAGES.set(403, (req: Request) => {
-  return `Resource "${req.url}" is forbidden. Please check your URL and try again.`;
-});
-ERROR_MESSAGES.set(404, (req: Request) => {
-  return `Resource "${req.url}" was not found. Please check your URL and try again.`;
-});
-ERROR_MESSAGES.set(500, () => {
-  return `An unknown server error occured. Please try again later, or contact the webmaster if this issue persists.`;
-});
+let statusCodes = Object.keys(errorMessages);
+for (let status of statusCodes) {
+  ERROR_MESSAGES.set(Number(status), (req) => {
+    return errorMessages[status].replace(/{url}/g, req.url);
+  });
+}
 
 // Helper Functions
-function processWebError(
-  webError: WebError,
-  req: Request,
-  res: Response
-): WebErrorData {
+function processWebError(webError: WebError, req: Request): WebErrorData {
   if (typeof webError === "number") {
     let message = ERROR_MESSAGES.get(webError)(req);
     let error = new Error(message);
@@ -53,18 +47,31 @@ function errorTemplate(error: WebErrorData) {
 }
 
 // Exports
-export default function renderError(
+export function sendPromiseCatchError(
+  status: WebError,
+  req: Request,
+  _res: Response,
+  next: WebErrorNextFunction
+): (err?: any) => void {
+  return (err?: any) => {
+    let webError = processWebError(status, req);
+    webError.error = err instanceof Error ? err : new Error(err);
+    next(webError);
+  };
+}
+
+export default function processError(
   err: WebError,
   req: Request,
   res: Response,
   _next: NextFunction
 ) {
-  let error = processWebError(err, req, res);
+  let error = processWebError(err, req);
   let rawMD = errorTemplate(error);
   res.status(error.status);
   sendMarkdown(rawMD, false)
     .then((md) => {
-      res.render("md", {
+      res.render("markdown", {
         title: `Error ${error.status}`,
         markdown: md,
       });

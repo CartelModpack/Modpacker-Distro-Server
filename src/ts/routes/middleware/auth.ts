@@ -1,6 +1,11 @@
-import { Request, Response } from "express";
+// Imports
+import { NextFunction, Request, Response } from "express";
 import db from "../../modules/db.js";
-import { WebErrorNextFunction } from "./error.js";
+import { sendPromiseCatchError, WebErrorNextFunction } from "./error.js";
+import formidable from "formidable";
+
+// Form handler.
+const form = formidable({});
 
 // Modify express requests to allow auth data.
 declare global {
@@ -30,10 +35,12 @@ export interface AuthUserAccounts {
   hash: string;
 }
 
+/** Checks if a date is not expired. */
 function checkExpiration(expires: Date): boolean {
   return new Date().getTime() < expires.getTime();
 }
-function getDateInFuture(ms: number): Date {
+/** Gets a date that is `ms` milliseconds before/after the current date. */
+function getRelativeDate(ms: number): Date {
   return new Date(new Date().getTime() + ms);
 }
 
@@ -75,23 +82,36 @@ export function processAuthToken(
               .then(() => {
                 next();
               })
-              .catch((error: Error) => {
-                // This will go to the error handler.
-                next({ status: 500, error });
-              });
+              .catch(sendPromiseCatchError(500, req, res, next));
           }
         }
 
         next(); // Go on to next handler, no matching token found.
       })
-      .catch((error) => {
-        next({ status: 500, error });
-      }); // This will go to the error handler.
+      .catch(sendPromiseCatchError(500, req, res, next)); // This will go to the error handler.
   } else {
     next(); // Go on to next handler, no cookie found.
   }
 }
 
-export function processLoginAttempt(req: Request, res: Response) {}
+export function processLoginAttempt(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  form
+    .parse(req)
+    .then(([fields]) => {
+      db.table<AuthUserAccounts>("user_accounts")
+        .allEntries()
+        .then((accs) => {
+          console.info(fields);
+          console.info(accs);
+          sendPromiseCatchError(200, req, res, next)();
+        })
+        .catch(sendPromiseCatchError(500, req, res, next));
+    })
+    .catch(sendPromiseCatchError(500, req, res, next));
+}
 
 export function processLogout(req: Request, res: Response) {}

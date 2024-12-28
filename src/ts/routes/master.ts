@@ -1,6 +1,7 @@
 // Imports
 import routerWebHome from "./web/home.js";
 import routerWebDocs from "./web/docs.js";
+import routerWebLogin from "./web/login.js";
 import routerAPIv1 from "./api/v1/v1.js";
 
 // Router
@@ -15,6 +16,7 @@ router.get("/api", (_req, res) => {
 
 // Web Routes
 router.use("/docs", routerWebDocs);
+router.use("/auth", routerWebLogin);
 router.use("/", routerWebHome);
 
 // No further routes, send 404;

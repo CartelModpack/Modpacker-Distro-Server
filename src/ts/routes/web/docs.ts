@@ -1,22 +1,18 @@
 import { Router } from "express";
 import { join } from "path";
 import sendMarkdown from "../middleware/markdown.js";
+import { sendPromiseCatchError } from "../middleware/error.js";
 export const router = Router();
 
-router.get("/", (_req, res) => {
+router.get("/", (req, res, next) => {
   sendMarkdown(join(process.cwd(), "./web/md/docs.md"))
     .then((md) => {
-      res.render("md", {
+      res.render("markdown", {
         title: "Modpacker Distro Server Docs",
-        markdown: md,
+        content: md,
       });
     })
-    .catch((error) => {
-      res.render("md", {
-        title: "Error",
-        markdown: error.message,
-      });
-    });
+    .catch(sendPromiseCatchError(500, req, res, next));
 });
 
 export default router;
