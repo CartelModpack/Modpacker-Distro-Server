@@ -7,7 +7,11 @@
       <a href="/docs"><span>API Docs</span></a>
     </div>
     <div class="flex order-3 justify-end">
-      <a href="/auth/login"><span>Login</span></a>
+      {{#if auth.loggedIn}}
+        <a href="/auth/logout"><span>Logout</span></a>
+      {{else}}
+        <a href="/auth/login"><span>Login</span></a>
+      {{/if}}
     </div>
   </div>
 </nav>

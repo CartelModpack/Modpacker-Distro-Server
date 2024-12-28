@@ -5,6 +5,7 @@ export const router = Router();
 router.get("/login", (req, res, _next) => {
   if (!req.auth.loggedIn) {
     res.render("login", {
+      auth: req.auth,
       title: "Modpacker Distro Server Login",
     });
   } else {

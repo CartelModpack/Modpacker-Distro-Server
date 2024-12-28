@@ -8,6 +8,7 @@ router.get("/", (req, res, next) => {
   sendMarkdown(join(process.cwd(), "./README.md"))
     .then((md) => {
       res.render("markdown", {
+        auth: req.auth,
         title: "Modpacker Distro Server",
         content: md,
       });

@@ -72,6 +72,7 @@ export default function processError(
   sendMarkdown(rawMD, false)
     .then((md) => {
       res.render("markdown", {
+        auth: req.auth,
         title: `Error ${error.status}`,
         content: md,
       });
