@@ -32,8 +32,9 @@
       { "name": "email", "type": "TEXT" }
     ],
     [
-      { "name": "server", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "name", "type": "TEXT" },
+      { "name": "url", "type": "TEXT" },
       { "name": "versions", "type": "TEXT" }
     ],
     [
