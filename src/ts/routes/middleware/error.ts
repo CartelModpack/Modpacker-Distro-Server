@@ -79,7 +79,9 @@ export function processAPIError(
   _next: NextFunction
 ): void {
   let error = cleanWebError(err, req);
-  console.info(error);
+  
+  console.warn(error);
+  
   sendAPIResponse(error, res, error.status);
 }
 

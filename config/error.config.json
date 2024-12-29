@@ -1,5 +1,6 @@
 {
   "200": "Your request was successful. If your seeing this and your not me ([@CartelModpack](https://github.com/CartelModpack)), I have accidentally left in a testing route and you should attack me.",
+  "400": "An unknown user error occured. Please try again later, or contact the webmaster if this issue persists.",
   "403": "Resource \"{url}\" is forbidden. Please check your URL and try again.",
   "404": "Resource \"{url}\" was not found. Please check your URL and try again.",
   "500": "An unknown server error occured. Please try again later, or contact the webmaster if this issue persists."
