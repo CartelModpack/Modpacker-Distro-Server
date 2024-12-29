@@ -5,6 +5,7 @@
     "user_accounts",
     "user_auth_tokens",
     "user_data",
+    "servers",
     "mods",
     "resource_packs",
     "shader_packs",
@@ -29,6 +30,10 @@
       { "name": "username", "type": "TEXT", "isPrimaryKey": true },
       { "name": "name", "type": "TEXT" },
       { "name": "email", "type": "TEXT" }
+    ],
+    [
+      { "name": "server", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "versions", "type": "TEXT" }
     ],
     [
       { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
