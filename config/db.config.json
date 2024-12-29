@@ -33,6 +33,7 @@
     ],
     [
       { "name": "server", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "name", "type": "TEXT" },
       { "name": "versions", "type": "TEXT" }
     ],
     [
