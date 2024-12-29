@@ -10,7 +10,7 @@ function getTimeNow(): string {
   return new Date().toUTCString();
 }
 
-// Main route.
+// Main Route
 router.get("/", (_req, res) => {
   sendAPIResponse(
     {

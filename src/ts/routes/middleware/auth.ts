@@ -4,6 +4,7 @@ import db from "../../modules/db.js";
 import { sendPromiseCatchError, WebErrorNextFunction } from "./error.js";
 import formidable, { Fields } from "formidable";
 import { createHash } from "crypto";
+import getFormData, { FormFieldProperty } from "./form.js";
 
 // Modify express requests to allow auth data.
 declare global {
@@ -41,6 +42,22 @@ export interface AuthUserFormData {
   remember_me: boolean;
 }
 export type AuthUserHashType = "sha1" | "sha256" | "sha512";
+
+// Const
+export const AUTH_PROPERTIES: FormFieldProperty[] = [
+  {
+    name: "username",
+    type: "string",
+  },
+  {
+    name: "password",
+    type: "string",
+  },
+  {
+    name: "remember_me",
+    type: "boolean",
+  },
+];
 
 // Helper Functions
 
@@ -158,16 +175,9 @@ export function processLoginAttempt(
   res: Response,
   next: NextFunction
 ) {
-  // Form handler.
-  const form = formidable({});
-
-  // Process form data.
-  form
-    .parse(req)
-    .then(([rawFields]) => {
-      let incoming = makeAuthFormDataReadable(rawFields);
-
-      // Get all account auth data.
+  getFormData<AuthUserFormData>(req, AUTH_PROPERTIES)
+    .then(({ fields: incoming }) => {
+      console.info(incoming);
       db.table<AuthUserAccount>("user_accounts")
         .allEntries()
         .then((accs) => {
