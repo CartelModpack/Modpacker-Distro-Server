@@ -7,14 +7,49 @@ import { AuthUserAccount } from "../routes/middleware/auth.js";
 let tables = <string[]>dbConfig.tables;
 let configs = <TableColumnSettings[][]>dbConfig.configs;
 let version = dbConfig.version;
+let preloads = <DBPreload<any>[]>(<unknown>dbConfig.preloads);
 
+/** Preload values from config. */
+export interface DBPreload<T> {
+  table: string,
+  entry: T,
+  exist_check_type: "entry" | "min_size",
+  exist_check: string | number,
+  fail_condition?: {
+    key: string,
+    value: any,
+    condition: DBConfigCondition
+  }
+}
+
+/** Conditions that can be checked. */
+export type DBConfigCondition = "=" | "!=" | "<" | ">" | "<=" | ">=";
+
+/** Verifies a condition based on the inputs. */
+export function verifyCondition<T>(item1: T, item2: T, condition: DBConfigCondition): boolean {
+  switch (condition) {
+    case "=":
+      return item1 === item2;
+    case "!=":
+      return item1 != item2;
+    case "<":
+      return item1 < item2;
+    case ">":
+      return item1 > item2;
+    case "<=":
+      return item1 <= item2;
+    case ">=":
+      return item1 >= item2;
+  }
+}
+
+/** Database object to make requests to. */
 export const db = new Database(join(process.cwd(), "database.db"));
 export default db;
 
-export function loadDatabase(): Promise<void> {
+/** Create/load all tables. */
+function createLoadTables(): Promise<void> {
   return new Promise((resolve, reject) => {
-    console.info("Loading database...");
-
     let promises: Promise<void>[] = [];
 
     for (let i = 0; i < tables.length; i++) {
@@ -25,68 +60,85 @@ export function loadDatabase(): Promise<void> {
         }).catch(() => {
           console.info(`Creating '${tables[i]}' table...`);
 
-          promises.push(new Promise((resolve, reject) => {
+          promises.push(new Promise((resolveLower, rejectLower) => {
             db.create(tables[i], configs[i]).then(() => {
               console.info(`Created '${tables[i]}' table.`);
+              resolveLower();
               resolve();
-            }).catch(reject);
+            }).catch((error) => {
+              rejectLower(error);
+              reject(error);
+            });
           }));
-
-          resolve();
         });
       }));
     }
 
-    Promise.all(promises)
-      .then(() => {
-        Promise.all(promises).then(() => {
-          db.table<{key: string, value: string}>("mds_data").allEntries().then((data) => {
-            let createVersKey = true;
-            for (let d of data) {
-              if (d.key === "db_version") {
-                createVersKey = false;
-                if (d.value !== String(version)) {
-                  // Will go into updater later, but for now this is fine. 
-                  reject(new Error(`DB config versions are not equal. Expected ${version}, was ${d.value}`));
+    Promise.all(promises).then(() => resolve()).catch(reject);
+  })
+}
+
+/** Insert preloads into database. */
+function insertPreloadsIntoTables(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let promises: Promise<void>[] = [];
+
+    for (let preload of preloads) {
+      promises.push(new Promise((resolve, reject) => {
+        console.info(`Inserting preload into ${preload.table}...`);
+
+        db.table(preload.table).allEntries().then((entires) => {
+          
+          if (preload.exist_check_type === "min_size") {
+            if (entires.length < <number>preload.exist_check) {
+              db.table(preload.table).add(preload.entry).then(() => {
+                console.info(`${preload.table} preload inserted.`);
+                resolve();
+              }).catch(reject);
+            } else {
+              console.info(`${preload.table} preload not needed.`);
+              resolve();
+            }
+          } else if (preload.exist_check_type === "entry") {
+            for (let entry of entires) {
+              if (entry[preload.exist_check] === preload.entry[preload.exist_check]) {
+                if (preload.fail_condition != null && verifyCondition(
+                  entry[preload.fail_condition.key], 
+                  preload.fail_condition.value, 
+                  preload.fail_condition.condition
+                )) {
+                  reject(new Error(`Preload Fail Condition Met. ${preload.fail_condition.key}: ${entry[preload.fail_condition.key]} ${preload.fail_condition.condition} ${preload.fail_condition.value}`));
+                  return;
+                } else {
+                  console.info(`${preload.table} preload not needed.`);
+                  resolve();
+                  return;
                 }
               }
             }
-            if (createVersKey) {
-              db.table("mds_data").add({key: "db_version", value: String(version)}).then(() => {
-                db.table<AuthUserAccount>("user_accounts").allEntries().then((accs) => {
-                  if (accs.length <= 0) {
-                    db.table<AuthUserAccount & {id: 0}>("user_accounts").add({
-                      username: "admin",
-                      // sha512 for "admin" 
-                      hash: "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec",
-                      id: 0
-                    }).then(() => {
-                      resolve();
-                    }).catch(reject);
-                  } else {
-                    resolve()
-                  }
-                }).catch(reject);
-              }).catch(reject);
-            } else {
-              db.table<AuthUserAccount>("user_accounts").allEntries().then((accs) => {
-                if (accs.length <= 0) {
-                  db.table<AuthUserAccount & {id: 0}>("user_accounts").add({
-                    username: "admin",
-                    // sha512 for "admin" 
-                    hash: "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec",
-                    id: 0
-                  }).then(() => {
-                    resolve();
-                  }).catch(reject);
-                } else {
-                  resolve()
-                }
-              }).catch(reject);
-            }
-          }).catch(reject);
+
+            db.table(preload.table).add(preload.entry).then(() => {
+              console.info(`${preload.table} preload inserted.`);
+              resolve()
+            }).catch(reject);
+          } else {
+            reject(new Error("Invalid Exist Check Type"));
+          }
         }).catch(reject);
-      })
-      .catch(reject);
+      }));
+    };
+
+    Promise.all(promises).then(() => resolve()).catch(reject);
+  })
+}
+
+/** Initially load the database.  */
+export function loadDatabase(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.info("Loading database...");
+
+    createLoadTables().then(() => {
+      insertPreloadsIntoTables().then(() => resolve()).catch(reject);
+    }).catch(reject);
   });
 }

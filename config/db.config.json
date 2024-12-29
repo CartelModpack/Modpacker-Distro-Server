@@ -54,5 +54,27 @@
       { "name": "project_id", "type": "TEXT" },
       { "name": "project_name", "type": "TEXT" }
     ]
+  ],
+  "preloads": [
+    {
+      "table": "mds_data",
+      "exist_check_type": "entry",
+      "exist_check": "key",
+      "entry": {
+        "key": "db_version",
+        "value": 0
+      },
+      "fail_condition": { "key": "value", "condition": "!=", "value": 0 }
+    },
+    {
+      "table": "user_accounts",
+      "exist_check_type": "min_size",
+      "exist_check": 1,
+      "entry": {
+        "id": 0,
+        "username": "admin",
+        "hash": "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"
+      }
+    }
   ]
 }
