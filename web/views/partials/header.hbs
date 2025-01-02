@@ -8,9 +8,10 @@
     <div class="flex flex-row order-2 justify-center">
       <a class="hover:link" href="/docs"><span>API Docs</span></a>
     </div>
-    <div class="flex order-3 justify-end">
+    <div class="flex order-3 justify-end items-center">
       {{#if auth.loggedIn}}
-        <a class="button" href="/auth/logout"><span>Logout</span></a>
+        <a class="button" href="/admin"><span>Admin Panel</span></a>
+        <a class="hover:link ml-2" href="/auth/logout">Logout</a>
       {{else}}
         <a class="button" href="/auth/login"><span>Login</span></a>
       {{/if}}

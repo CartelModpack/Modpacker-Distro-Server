@@ -177,7 +177,6 @@ export function processLoginAttempt(
 ) {
   getFormData<AuthUserFormData>(req, AUTH_PROPERTIES)
     .then(({ fields: incoming }) => {
-      console.info(incoming);
       db.table<AuthUserAccount>("user_accounts")
         .allEntries()
         .then((accs) => {
