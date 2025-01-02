@@ -1,4 +1,62 @@
-<h1>Admin Panel</h1>
+<div class="text-content">
 
-<p>Welcome to the Admin Panel. This is where you can modify your modpack
-  settings such as included mods, resource packs, etc. and metadata info.</p>
+  <h1>Admin Panel</h1>
+
+  <p>
+    Welcome to the Admin Panel. This is where you can modify your modpack
+    settings such as included mods, resource packs, etc. and metadata info.
+    Additonally, if your server is configured to be a modpack registry (such as
+    Modpackers' offical registry) then you will be able to manage that config
+    here as well.
+  </p>
+
+  <hr />
+
+  <h2>Modpack Options</h2>
+
+  <p>Config for your Modpack.</p>
+
+</div>
+
+<div class="grid gap-1 grid-cols-2 md:grid-cols-3 md:grid-rows-2">
+  <a href="/admin/modpack/mods" class="grid-link row-span-2">
+    <p class="text-3xl">MODS</p>
+    <p class="font-normal">Modify Modpack Mods</p>
+  </a>
+  <a href="/admin/modpack/resourcepacks" class="grid-link">
+    <p class="text-xl">RESOURCE PACKS</p>
+    <p class="font-normal">Modify Modpack Resource Packs</p>
+  </a>
+  <a href="/admin/modpack/config" class="grid-link">
+    <p class="text-xl">CONFIG FILES</p>
+    <p class="font-normal">Modify Modpack Conf. Files</p>
+  </a>
+  <a href="/admin/modpack/shaders" class="grid-link">
+    <p class="text-xl">SHADERS</p>
+    <p class="font-normal">Modify Modpack Shaders</p>
+  </a>
+  <a href="/admin/modpack" class="grid-link">
+    <p class="text-xl">MOD METADATA</p>
+    <p class="font-normal">Update Modpack Info</p>
+  </a>
+</div>
+
+<div class="text-content mt-4">
+  <hr />
+
+  <h2>MPDS Options</h2>
+
+  <p>Manage config for MPDS and the registry.</p>
+
+</div>
+
+<div class="grid gap-1 grid-cols-1 md:grid-cols-2">
+  <a href="/admin/server/users" class="grid-link">
+    <p class="text-xl">ADMINISTRATORS</p>
+    <p class="font-normal">Modify Server Administrators</p>
+  </a>
+  <a href="/admin/server/registry" class="grid-link">
+    <p class="text-xl">REGISTRY</p>
+    <p class="font-normal">Modify Server Registry</p>
+  </a>
+</div>

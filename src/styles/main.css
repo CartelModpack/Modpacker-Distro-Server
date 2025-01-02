@@ -6,4 +6,65 @@
   body {
     @apply dark:bg-slate-900;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply text-accent font-semibold font-mono;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
+  h4 {
+    @apply text-lg;
+  }
+
+  h5,
+  p {
+    @apply text-base;
+  }
+
+  p {
+    @apply dark:text-slate-100;
+  }
+
+  hr {
+    @apply dark:decoration-slate-400;
+  }
+
+  .text-content * {
+    @apply mb-3;
+  }
+
+  .link {
+    @apply text-accent-light hover:text-accent hover:underline underline-offset-2;
+  }
+
+  .button {
+    @apply font-bold text-white px-4 py-2 bg-accent-light hover:bg-accent;
+  }
+
+  .grid-link {
+    @apply h-full button flex flex-col justify-center items-center;
+  }
+
+  .input-text {
+    @apply outline-none border-2 border-slate-300 hover:underline p-1 font-mono text-xl;
+  }
+
+  .checkbox {
+    @apply h-5 w-5 cursor-pointer border-2 transition-all appearance-none border-slate-300 checked:bg-accent-light checked:border-accent-light;
+  }
 }

@@ -114,7 +114,20 @@ function generateSession(
 
 // Exports
 
-/** Express middleware to check for authentication. */
+/** Express middleware to check for authentication at some point in the route. */
+export function verifyAuth(
+  req: Request,
+  _res: Response,
+  next: WebErrorNextFunction
+) {
+  if (req.auth.loggedIn) {
+    next();
+  } else {
+    next(403);
+  }
+}
+
+/** Express middleware to check for authentication on connection. */
 export function processAuthToken(
   req: Request,
   res: Response,

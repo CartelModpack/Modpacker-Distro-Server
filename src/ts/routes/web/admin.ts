@@ -1,19 +1,11 @@
 import { Router } from "express";
-import { processLoginAttempt, processLogout } from "../middleware/auth.js";
+import routerAdminHome from "./admin/home.js";
+import { verifyAuth } from "../middleware/auth.js";
+
 export const router = Router();
 
-router.get("/", (req, res, next) => {
-  if (req.auth.loggedIn) {
-    res.render("admin/home", {
-      auth: req.auth,
-      title: "MPDS Admin Panel",
-    });
-  } else {
-    next(403);
-  }
-});
+router.use(verifyAuth);
 
-router.post("/login", processLoginAttempt);
-router.get("/logout", processLogout);
+router.use("/", routerAdminHome);
 
 export default router;
