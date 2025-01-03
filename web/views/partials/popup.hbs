@@ -1,0 +1,11 @@
+<div
+  class="flex flex-row items-center popup popup-{{type}}
+    justify-between md:justify-start"
+  id="popup-{{id}}"
+>
+  <button
+    class="md:mr-5 text-2xl md:text-base order-2 md:order-1"
+    onclick="document.getElementById('popup-{{id}}').remove();"
+  >x</button>
+  <p class="order-1 md:order-2">{{text}}</p>
+</div>

@@ -9,6 +9,7 @@ import config from "./modules/config.js";
 import cookieParser from "cookie-parser";
 import { processAuthToken } from "./routes/middleware/auth.js";
 import processWebError from "./routes/middleware/error.js";
+import { processMessages } from "./routes/middleware/msg.js";
 
 // Load DB
 await loadDatabase();
@@ -36,6 +37,7 @@ app.use(express.static(join(process.cwd(), "./web/public")));
 // Middleware
 app.use(cookieParser());
 app.use(processAuthToken);
+app.use(processMessages);
 
 // Routes
 app.use(routerMaster);

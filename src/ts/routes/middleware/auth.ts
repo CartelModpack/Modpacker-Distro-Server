@@ -2,7 +2,6 @@
 import { NextFunction, Request, Response } from "express";
 import db from "../../modules/db.js";
 import { sendPromiseCatchError, WebErrorNextFunction } from "./error.js";
-import formidable, { Fields } from "formidable";
 import { createHash } from "crypto";
 import getFormData, { FormFieldProperty } from "./form.js";
 
@@ -69,17 +68,6 @@ function checkExpiration(expires: Date): boolean {
 /** Gets a date that is `ms` milliseconds before/after the current date. */
 function getRelativeDate(ms: number): Date {
   return new Date(new Date().getTime() + ms);
-}
-
-/** Turn the formidable `fields` property into something easier to use. */
-function makeAuthFormDataReadable(fields: Fields<string>): AuthUserFormData {
-  let remember_me: boolean =
-    fields.remember_me != null && fields.remember_me[0] === "on";
-  return {
-    username: fields.username[0],
-    password: fields.password[0],
-    remember_me,
-  };
 }
 
 /** Calculate a hash */
@@ -207,13 +195,13 @@ export function processLoginAttempt(
                 .add(session)
                 .then(() => {
                   res.cookie("Auth-Token", JSON.stringify(session));
-                  res.redirect("/");
+                  res.redirect('/?msg={"type":"info","text":"Logged in!"}');
                 })
                 .catch(sendPromiseCatchError(500, req, res, next));
             }
           }
           // Return to login if failed.
-          if (!found) res.redirect("/auth/login");
+          if (!found) res.redirect("/auth/login?msg=Invalid Username/Password");
         })
         .catch(sendPromiseCatchError(500, req, res, next));
     })

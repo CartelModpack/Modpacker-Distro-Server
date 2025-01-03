@@ -3,6 +3,50 @@
 @tailwind utilities;
 
 @layer base {
+  .text-content * {
+    @apply mb-3;
+  }
+
+  .link {
+    @apply text-accent-light hover:text-accent hover:underline underline-offset-2;
+  }
+
+  .button {
+    @apply font-bold text-white px-4 py-2 bg-accent-light hover:bg-accent;
+  }
+
+  .grid-link {
+    @apply h-full button flex flex-col justify-center items-center;
+  }
+
+  .input-text {
+    @apply outline-none border-2 border-slate-300 hover:underline p-1 font-mono text-xl;
+  }
+
+  .checkbox {
+    @apply h-5 w-5 cursor-pointer border-2 transition-all appearance-none border-slate-300 checked:bg-accent-light checked:border-accent-light;
+  }
+
+  .popup {
+    @apply border border-spacing-3 p-2 text-black bg-slate-100 border-slate-400 w-full md:w-fit;
+  }
+
+  .popup .close-btn {
+    @apply underline cursor-pointer;
+  }
+
+  .popup-error {
+    @apply bg-red-200 border-red-500;
+  }
+
+  .popup-warning {
+    @apply bg-yellow-100 border-yellow-500;
+  }
+
+  .popup-info {
+    @apply bg-green-200 border-green-500;
+  }
+
   body {
     @apply dark:bg-slate-900;
   }
@@ -42,29 +86,5 @@
 
   hr {
     @apply dark:decoration-slate-400;
-  }
-
-  .text-content * {
-    @apply mb-3;
-  }
-
-  .link {
-    @apply text-accent-light hover:text-accent hover:underline underline-offset-2;
-  }
-
-  .button {
-    @apply font-bold text-white px-4 py-2 bg-accent-light hover:bg-accent;
-  }
-
-  .grid-link {
-    @apply h-full button flex flex-col justify-center items-center;
-  }
-
-  .input-text {
-    @apply outline-none border-2 border-slate-300 hover:underline p-1 font-mono text-xl;
-  }
-
-  .checkbox {
-    @apply h-5 w-5 cursor-pointer border-2 transition-all appearance-none border-slate-300 checked:bg-accent-light checked:border-accent-light;
   }
 }

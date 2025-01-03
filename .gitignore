@@ -89,7 +89,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -129,7 +128,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Tailwind
+# Build Files
+dist/
 web/public/css/
 
 # Databases

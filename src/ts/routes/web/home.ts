@@ -11,6 +11,7 @@ router.get("/", (req, res, next) => {
         auth: req.auth,
         title: "Modpacker Distro Server",
         content: md,
+        popups: req.messages,
       });
     })
     .catch(sendPromiseCatchError(500, req, res, next));

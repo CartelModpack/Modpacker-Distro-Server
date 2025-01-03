@@ -12,5 +12,12 @@
         {{{body}}}
       </div>
     </div>
+    <div class="fixed top-0 left-0 w-full">
+      <div class="flex flex-col-reverse mx-2 mt-2 [&>*]:mb-2" id="popups">
+        {{#each popups}}
+          {{> popup type=type text=text}}
+        {{/each}}
+      </div>
+    </div>
   </body>
 </html>

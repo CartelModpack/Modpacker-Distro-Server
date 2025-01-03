@@ -7,6 +7,7 @@ router.get("/login", (req, res, _next) => {
     res.render("login", {
       auth: req.auth,
       title: "Modpacker Distro Server Login",
+      popups: req.messages,
     });
   } else {
     res.redirect("/");
