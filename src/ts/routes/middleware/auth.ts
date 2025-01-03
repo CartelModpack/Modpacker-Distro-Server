@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import db from "../../modules/db.js";
 import { sendPromiseCatchError, WebErrorNextFunction } from "./error.js";
 import { createHash } from "crypto";
-import getFormData, { FormFieldProperty } from "./form.js";
+import getFormData, { FormFieldProperties } from "./form.js";
 
 // Modify express requests to allow auth data.
 declare global {
@@ -43,20 +43,11 @@ export interface AuthUserFormData {
 export type AuthUserHashType = "sha1" | "sha256" | "sha512";
 
 // Const
-export const AUTH_PROPERTIES: FormFieldProperty[] = [
-  {
-    name: "username",
-    type: "string",
-  },
-  {
-    name: "password",
-    type: "string",
-  },
-  {
-    name: "remember_me",
-    type: "boolean",
-  },
-];
+export const AUTH_PROPERTIES: FormFieldProperties = {
+  username: "string",
+  password: "string",
+  remember_me: "boolean",
+};
 
 // Helper Functions
 

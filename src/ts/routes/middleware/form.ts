@@ -2,10 +2,7 @@ import { Request } from "express";
 import formidable from "formidable";
 
 export type FormFieldType = "string" | "number" | "boolean";
-export interface FormFieldProperty {
-  name: string;
-  type: FormFieldType;
-}
+export type FormFieldProperties = { [key: string]: FormFieldType };
 export interface FormParsed<T> {
   fields: T;
   files?: formidable.Files<string>;
@@ -35,12 +32,12 @@ function convertToType(data: any, type: FormFieldType): any {
  */
 export function processFormFields<T extends Object>(
   fields: formidable.Fields<string>,
-  properties: FormFieldProperty[]
+  properties: FormFieldProperties
 ): T {
   let out: { [key: string]: any } = {};
 
-  for (let key of properties) {
-    out[key.name] = convertToType(fields[key.name], key.type);
+  for (let key of Object.keys(properties)) {
+    out[key] = convertToType(fields[key], properties[key]);
   }
 
   return <T>out;
@@ -49,22 +46,21 @@ export function processFormFields<T extends Object>(
 /**
  * Process form data.
  * @param form_data The `formidable` form data.
- * @returns An object representing
+ * @returns An object contained parsed data.
  */
 export function processFormData<T extends Object>(
   form_data: [formidable.Fields<string>, formidable.Files<string>],
-  properties: FormFieldProperty[]
+  properties: FormFieldProperties
 ): FormParsed<T> {
-  let files = form_data[1] != null ? form_data[1] : null;
   return {
     fields: processFormFields<T>(form_data[0], properties),
-    files,
+    files: form_data[1] ?? null,
   };
 }
 
 export default function getFormData<T extends Object>(
   req: Request,
-  properties: FormFieldProperty[]
+  properties: FormFieldProperties
 ): Promise<FormParsed<T>> {
   return new Promise((resolve, reject) => {
     let form = formidable({});
