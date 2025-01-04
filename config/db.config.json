@@ -4,8 +4,8 @@
     "mds_data",
     "user_accounts",
     "user_auth_tokens",
-    "user_data",
     "servers",
+    "modpack",
     "mods",
     "resource_packs",
     "shader_packs",
@@ -27,15 +27,16 @@
       { "name": "expires", "type": "TEXT" }
     ],
     [
-      { "name": "username", "type": "TEXT", "isPrimaryKey": true },
-      { "name": "name", "type": "TEXT" },
-      { "name": "email", "type": "TEXT" }
-    ],
-    [
       { "name": "id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "name", "type": "TEXT" },
       { "name": "url", "type": "TEXT" },
       { "name": "versions", "type": "TEXT" }
+    ],
+    [
+      { "name": "version", "type": "TEXT", "isPrimaryKey": true },
+      { "name": "icon", "type": "TEXT" },
+      { "name": "name", "type": "TEXT" },
+      { "name": "description", "type": "TEXT" }
     ],
     [
       { "name": "id", "type": "INTENGER", "isPrimaryKey": true },
@@ -72,6 +73,17 @@
         "value": 0
       },
       "fail_condition": { "key": "value", "condition": "!=", "value": 0 }
+    },
+    {
+      "table": "modpack",
+      "exist_check_type": "entry",
+      "exist_check": "version",
+      "entry": {
+        "version": "1.0.0",
+        "icon": "temp",
+        "name": "Fake Modpack",
+        "description": "This is a fake modpack for development purposes."
+      }
     },
     {
       "table": "user_accounts",

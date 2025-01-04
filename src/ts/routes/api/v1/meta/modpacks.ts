@@ -6,34 +6,19 @@ import {
   sendPromiseCatchError,
   WebErrorNextFunction,
 } from "../../../middleware/error.js";
-import getFormData, { FormFieldProperty } from "../../../middleware/form.js";
+import getFormData, { FormFieldProperties } from "../../../middleware/form.js";
 export const router = Router();
 
 // Constants
-export const ADD_MODPACK_PROPERTIES: FormFieldProperty[] = [
-  {
-    name: "id",
-    type: "string",
-  },
-  {
-    name: "name",
-    type: "string",
-  },
-  {
-    name: "url",
-    type: "string",
-  },
-  {
-    name: "versions",
-    type: "string",
-  },
-];
-export const REMOVE_MODPACK_PROPERTIES: FormFieldProperty[] = [
-  {
-    name: "id",
-    type: "string",
-  },
-];
+export const ADD_MODPACK_PROPERTIES: FormFieldProperties = {
+  id: "string",
+  name: "string",
+  url: "string",
+  versions: "string",
+};
+export const REMOVE_MODPACK_PROPERTIES: FormFieldProperties = {
+  id: "string",
+};
 
 // Types
 

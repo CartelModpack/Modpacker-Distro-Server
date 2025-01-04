@@ -131,6 +131,7 @@ out
 # Build Files
 dist/
 web/public/css/
+uploads/
 
 # Databases
 *.db

@@ -63,13 +63,19 @@ export default function getFormData<T extends Object>(
   properties: FormFieldProperties
 ): Promise<FormParsed<T>> {
   return new Promise((resolve, reject) => {
-    let form = formidable({});
+    let form = formidable({
+      allowEmptyFiles: true,
+      minFileSize: 0,
+    });
 
     form
       .parse(req)
       .then((data) => {
         resolve(processFormData<T>(data, properties));
       })
-      .catch(reject);
+      .catch((error) => {
+        console.error(error);
+        reject(error);
+      });
   });
 }
