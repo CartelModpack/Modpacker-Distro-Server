@@ -119,7 +119,7 @@ function getCleanedModpackData(
 
 // Advanced Routes
 
-router.post("/update/modpack", (req, res, next) => {
+router.post("/update", (req, res, next) => {
   db.table<ModpackMetadata>("modpack")
     .allEntries()
     .then((meta) => {
