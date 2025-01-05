@@ -7,7 +7,6 @@ import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import formidable from "formidable";
 import semver from "semver";
-import { sendAPIResponse } from "../../middleware/api.js";
 
 // Make Router
 export const router = Router();
@@ -26,21 +25,57 @@ interface ModpackMetadata extends ModpackMetadataInfo {
   icon: string;
 }
 
+interface ItemInfo {
+  id: number;
+  versions: string;
+  project_id: string;
+  project_name: string;
+}
+
+// Constants
+
 /** The modpack meta properties expected in the form field. */
 const MODPACK_META_PROPERTIES: FormFieldProperties = {
   version: "string",
   name: "string",
   description: "string",
 };
+const EDITOR_DISPLAY_NAMES = {
+  mods: "Mods",
+  resource_packs: "Resource Packs",
+  shader_packs: "Shaders",
+  config_files: "Config Files",
+};
 
 // Basic Routes
 router.get("/:edit", (req, res, next) => {
   const editors = ["mods", "resource_packs", "shader_packs", "config_files"];
   if (editors.includes(req.params.edit)) {
-    res.render("admin/editor", {
-      auth: req.auth,
-      title: `MPDS Modpack Editor (${req.params.edit})`,
-    });
+    db.table<ModpackMetadata>("modpack")
+      .allEntries()
+      .then((metas) => {
+        const meta = metas[metas.length - 1];
+        db.table<ItemInfo>(req.params.edit)
+          .allEntries()
+          .then((items) => {
+            const ids: number[] = [];
+            for (const item of items) {
+              ids.push(item.id);
+            }
+            res.render("admin/editor", {
+              auth: req.auth,
+              title: `MPDS Modpack Editor (${
+                EDITOR_DISPLAY_NAMES[req.params.edit]
+              })`,
+              editor_id: req.params.edit,
+              editor: EDITOR_DISPLAY_NAMES[req.params.edit],
+              modpack: meta,
+              item_ids: JSON.stringify(ids),
+            });
+          })
+          .catch(sendPromiseCatchError(500, req, res, next));
+      })
+      .catch(sendPromiseCatchError(500, req, res, next));
   } else {
     next(404);
   }
