@@ -34,11 +34,16 @@ const MODPACK_META_PROPERTIES: FormFieldProperties = {
 };
 
 // Basic Routes
-router.get("/:edit", (req, res) => {
-  res.render("admin/editor", {
-    auth: req.auth,
-    title: `MPDS Modpack Editor (${req.params.edit})`,
-  });
+router.get("/:edit", (req, res, next) => {
+  const editors = ["mods", "resource_packs", "shader_packs", "config_files"];
+  if (editors.includes(req.params.edit)) {
+    res.render("admin/editor", {
+      auth: req.auth,
+      title: `MPDS Modpack Editor (${req.params.edit})`,
+    });
+  } else {
+    next(404);
+  }
 });
 
 router.get("/", (req, res, next) => {
@@ -89,7 +94,7 @@ function makeNewIcon(files: formidable.Files): Promise<boolean> {
 }
 
 /** Get cleaned modpack data, passes if good, fails if bad. */
-function getCleanedModpackData(
+function getCleanedModpackMetaData(
   fields: ModpackMetadataInfo
 ): Promise<ModpackMetadataInfo> {
   return new Promise((resolve, reject) => {
@@ -125,7 +130,7 @@ router.post("/update", (req, res, next) => {
     .then((meta) => {
       getFormData<ModpackMetadataInfo>(req, MODPACK_META_PROPERTIES)
         .then(({ fields, files }) => {
-          getCleanedModpackData(fields)
+          getCleanedModpackMetaData(fields)
             .then((newMeta) => {
               makeNewIcon(files)
                 .then((madeIcon) => {
