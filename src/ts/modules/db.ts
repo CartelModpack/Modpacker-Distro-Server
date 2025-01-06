@@ -1,5 +1,4 @@
-import Database from "@gavinhsmith/simpledatabase";
-import { TableColumnSettings } from "@gavinhsmith/simpledatabase/types/DatabaseTypes.js";
+import Database, { TableColumnSettings } from "@gavinhsmith/simpledb";
 import { join } from "path";
 import dbConfig from "../../../config/db.config.json" with {type: "json"};
 

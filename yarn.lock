@@ -32,10 +32,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@gavinhsmith/simpledatabase@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@gavinhsmith/simpledatabase/-/simpledatabase-1.0.10.tgz#ab33e53a1e87a38c3375b60b8b303c268572e66d"
-  integrity sha512-63r0T1F+LSJPU9RNAFnqyT4mL43o7wzTS74ziFUlKbBAKd0q59TRYTse1RRGmxdAUifNYUAlLmBxbBwcKb4EaQ==
+"@gavinhsmith/simpledb@^1.0.5":
+  version "1.0.5"
+  resolved "https://npm.pkg.github.com/download/@gavinhsmith/simpledb/1.0.5/d5882eaa1c1586801272f53f5ab19f6271cc4717#d5882eaa1c1586801272f53f5ab19f6271cc4717"
+  integrity sha512-8AXI67HZ+h1Fda9lKnHpX7YhHnfjpw3UrgHLn6zLrTT/1Y4/wX8Pw2zgazjWprKh6CTTGF5k+rRorfzHWI0P8A==
   dependencies:
     sqlite3 "^5.1.7"
 
@@ -279,9 +279,9 @@ agent-base@6, agent-base@^6.0.2:
     debug "4"
 
 agentkeepalive@^4.1.3:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/agentkeepalive/-/agentkeepalive-4.5.0.tgz#2673ad1389b3c418c5a20c5d7364f93ca04be923"
-  integrity sha512-5GG/5IbQQpC9FpkRGsSvZI5QYeSCzlJHdpBQntCsuTOxhKD8lqKhrleg2Yi7yvMIf82Ycmmqln9U8V9qwEiJew==
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/agentkeepalive/-/agentkeepalive-4.6.0.tgz#35f73e94b3f40bf65f105219c623ad19c136ea6a"
+  integrity sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==
   dependencies:
     humanize-ms "^1.2.1"
 
