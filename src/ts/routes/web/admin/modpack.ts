@@ -14,23 +14,23 @@ export const router = Router();
 // Types/Interfaces
 
 /** Text Info about a Modpack. */
-interface ModpackMetadataInfo {
+type ModpackMetadataInfo = {
   version: string;
   name: string;
   description: string;
-}
+};
 
 /** Metadata about a Modpack. */
-interface ModpackMetadata extends ModpackMetadataInfo {
+type ModpackMetadata = ModpackMetadataInfo & {
   icon: string;
-}
+};
 
-interface ItemInfo {
+type ItemInfo = {
   id: number;
   versions: string;
   project_id: string;
   project_name: string;
-}
+};
 
 // Constants
 

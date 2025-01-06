@@ -23,17 +23,17 @@ export const REMOVE_MODPACK_PROPERTIES: FormFieldProperties = {
 // Types
 
 /** Modpack Server Information */
-export interface ModpackServer {
+export type ModpackServer = {
   id: string;
   name: string;
   url: string;
   versions: string;
-}
+};
 
 /** Modpack Server Removal Request */
-export interface ModpackRemovalRequest {
+export type ModpackRemovalRequest = {
   id: string;
-}
+};
 
 // Helper Functions
 
@@ -43,7 +43,7 @@ function getModpacksRouter(
   res: Response,
   next: WebErrorNextFunction
 ) {
-  db.table("servers")
+  db.table<ModpackServer>("servers")
     .allEntries()
     .then((entires: ModpackServer[]) => {
       if (req.params.versions != null) {

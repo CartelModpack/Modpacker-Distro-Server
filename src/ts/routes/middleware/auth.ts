@@ -26,15 +26,15 @@ export interface AuthUserData {
   name: string;
   email: string;
 }
-export interface AuthTokenData {
+export type AuthTokenData = {
   token: string;
   username: string;
   expires: string;
-}
-export interface AuthUserAccount {
+};
+export type AuthUserAccount = {
   username: string;
   hash: string;
-}
+};
 export interface AuthUserFormData {
   username: string;
   password: string;

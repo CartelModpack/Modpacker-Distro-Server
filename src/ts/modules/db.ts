@@ -51,40 +51,47 @@ export default db;
 /** Create/load all tables. */
 function createLoadTables(): Promise<void> {
   return new Promise((resolve, reject) => {
-    let promises: Promise<void>[] = [];
+    const existPromises: Promise<void>[] = [];
+    const createPromises: Promise<void>[] = [];
 
     for (let i = 0; i < tables.length; i++) {
-      promises.push(
-        new Promise((resolve, reject) => {
+      existPromises.push(
+        new Promise((resolveTable, rejectTable) => {
           db.exists(tables[i])
-            .then(() => {
-              console.info(`Loaded '${tables[i]}' table.`);
-              resolve();
-            })
-            .catch(() => {
-              console.info(`Creating '${tables[i]}' table...`);
+            .then((exists) => {
+              if (exists) {
+                console.info(`Loaded '${tables[i]}' table.`);
+                resolveTable();
+              } else {
+                console.info(`Creating '${tables[i]}' table...`);
 
-              promises.push(
-                new Promise((resolveLower, rejectLower) => {
-                  db.create(tables[i], configs[i])
-                    .then(() => {
-                      console.info(`Created '${tables[i]}' table.`);
-                      resolveLower();
-                      resolve();
-                    })
-                    .catch((error) => {
-                      rejectLower(error);
-                      reject(error);
-                    });
-                })
-              );
-            });
+                createPromises.push(
+                  new Promise((resolveLower, rejectLower) => {
+                    db.create(tables[i], configs[i])
+                      .then(() => {
+                        console.info(`Created '${tables[i]}' table.`);
+                        resolveLower();
+                        resolveTable();
+                      })
+                      .catch((error) => {
+                        rejectLower(error);
+                        rejectTable(error);
+                      });
+                  })
+                );
+              }
+            })
+            .catch(rejectTable);
         })
       );
     }
 
-    Promise.all(promises)
-      .then(() => resolve())
+    Promise.all(existPromises)
+      .then(() => {
+        Promise.all(createPromises)
+          .then(() => resolve())
+          .catch(reject);
+      })
       .catch(reject);
   });
 }
@@ -96,7 +103,7 @@ function insertPreloadsIntoTables(): Promise<void> {
 
     for (let preload of preloads) {
       promises.push(
-        new Promise((resolve, reject) => {
+        new Promise((resolvePreload, rejectPreload) => {
           console.info(`Inserting preload into ${preload.table}...`);
 
           db.table(preload.table)
@@ -108,12 +115,12 @@ function insertPreloadsIntoTables(): Promise<void> {
                     .add(preload.entry)
                     .then(() => {
                       console.info(`${preload.table} preload inserted.`);
-                      resolve();
+                      resolvePreload();
                     })
-                    .catch(reject);
+                    .catch(rejectPreload);
                 } else {
                   console.info(`${preload.table} preload not needed.`);
-                  resolve();
+                  resolvePreload();
                 }
               } else if (preload.exist_check_type === "entry") {
                 for (let entry of entires) {
@@ -129,7 +136,7 @@ function insertPreloadsIntoTables(): Promise<void> {
                         preload.fail_condition.condition
                       )
                     ) {
-                      reject(
+                      rejectPreload(
                         new Error(
                           `Preload Fail Condition Met. ${
                             preload.fail_condition.key
@@ -141,7 +148,7 @@ function insertPreloadsIntoTables(): Promise<void> {
                       return;
                     } else {
                       console.info(`${preload.table} preload not needed.`);
-                      resolve();
+                      resolvePreload();
                       return;
                     }
                   }
@@ -151,14 +158,14 @@ function insertPreloadsIntoTables(): Promise<void> {
                   .add(preload.entry)
                   .then(() => {
                     console.info(`${preload.table} preload inserted.`);
-                    resolve();
+                    resolvePreload();
                   })
-                  .catch(reject);
+                  .catch(rejectPreload);
               } else {
-                reject(new Error("Invalid Exist Check Type"));
+                rejectPreload(new Error("Invalid Exist Check Type"));
               }
             })
-            .catch(reject);
+            .catch(rejectPreload);
         })
       );
     }
@@ -177,7 +184,7 @@ export function loadDatabase(): Promise<void> {
     createLoadTables()
       .then(() => {
         insertPreloadsIntoTables()
-          .then(() => resolve())
+          .then(resolve)
           .catch(reject);
       })
       .catch(reject);
