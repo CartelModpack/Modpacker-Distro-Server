@@ -155,7 +155,7 @@ function toggleNoItemsIndicator(value) {
 }
 
 /** Load content from modrinth. */
-function loadResourceFromModrinth(project_id, usage, elements = {}) {
+function loadResourceFromModrinth(project_id, usage, elements = {}, callback) {
   fetch("https://api.modrinth.com/v2/project/" + project_id)
     .then((res) => res.json())
     .then((content) => {
@@ -166,19 +166,34 @@ function loadResourceFromModrinth(project_id, usage, elements = {}) {
 
       if (elements.versions != null) elements.versions.value = usage.versions;
       if (elements.tags != null) elements.tags.innerHTML = usage.tags;
+      callback();
     })
-    .catch(console.error);
+    .catch((error) => {
+      console.error(error);
+      callback();
+    });
+}
+
+/** Load content from a source */
+function loadResourceFromSource(
+  project_id,
+  source,
+  usage,
+  elements = {},
+  callback
+) {
+  if (source === "modrinth") {
+    loadResourceFromModrinth(project_id, usage, elements, callback);
+  } else {
+    console.warn("Don't know how to load this resource!");
+    callback();
+  }
 }
 
 /** Change the display item that is shown */
 function changeDisplayItem(project_id) {
   if (PERSISTANT_CURRENT_LOADED.dataset["loaded"] != project_id) {
     console.info(`Loading ${project_id} into viewer...`);
-
-    if (VISIBLE_DISPLAY.classList.contains("hidden")) {
-      VISIBLE_DISPLAY_INDICATOR.classList.add("hidden");
-      VISIBLE_DISPLAY.classList.remove("hidden");
-    }
 
     const old_project_id = PERSISTANT_CURRENT_LOADED.dataset["loaded"];
     PERSISTANT_CURRENT_LOADED.dataset["loaded"] = project_id;
@@ -187,14 +202,11 @@ function changeDisplayItem(project_id) {
       `[data-item-id="${old_project_id}"]`
     );
     const new_item = document.querySelector(`[data-item-id="${project_id}"]`);
+    const project_source = new_item.children[1].children[2].innerHTML;
 
-    if (old_item != null) {
-      old_item.classList.remove("bg-slate-50");
-    }
-    new_item.classList.add("bg-slate-50");
-
-    loadResourceFromModrinth(
+    loadResourceFromSource(
       project_id,
+      project_source,
       {
         versions: new_item.dataset["itemVersions"],
         tags: new_item.dataset["itemTags"],
@@ -205,6 +217,17 @@ function changeDisplayItem(project_id) {
         description: VISIBLE_DESCRIPTION,
         tags: VISIBLE_TAGS,
         versions: VISIBLE_VERSIONS,
+      },
+      () => {
+        if (old_item != null) {
+          old_item.classList.remove("bg-slate-50");
+        }
+        new_item.classList.add("bg-slate-50");
+
+        if (VISIBLE_DISPLAY.classList.contains("hidden")) {
+          VISIBLE_DISPLAY_INDICATOR.classList.add("hidden");
+          VISIBLE_DISPLAY.classList.remove("hidden");
+        }
       }
     );
   }
@@ -223,9 +246,7 @@ function loadResourceInfo() {
       const icon = item.children[0];
       const title = item.children[1].children[0].children[0];
 
-      if (project_source === "modrinth") {
-        loadResourceFromModrinth(project_id, {}, { icon, title });
-      }
+      loadResourceFromSource(project_id, project_source, {}, { icon, title });
     });
 
     changeDisplayItem(items[0].dataset["itemId"]);
