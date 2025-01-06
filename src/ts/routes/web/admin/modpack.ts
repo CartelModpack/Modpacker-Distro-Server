@@ -100,6 +100,7 @@ router.get("/:edit", (req, res, next) => {
               },
               modpack: meta,
               items: {
+                count: items.length,
                 has: items.length > 0,
                 all: clean_items,
                 ids: JSON.stringify(ids),
