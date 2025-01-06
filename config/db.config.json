@@ -40,26 +40,30 @@
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
-      { "name": "applied_versions", "type": "TEXT" },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_source", "type": "TEXT" },
+      { "name": "applied_versions", "type": "TEXT" },
       { "name": "tags", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
-      { "name": "applied_versions", "type": "TEXT" },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_source", "type": "TEXT" },
+      { "name": "applied_versions", "type": "TEXT" },
       { "name": "tags", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
-      { "name": "applied_versions", "type": "TEXT" },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_source", "type": "TEXT" },
+      { "name": "applied_versions", "type": "TEXT" },
       { "name": "tags", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
-      { "name": "applied_versions", "type": "TEXT" },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_source", "type": "TEXT" },
+      { "name": "applied_versions", "type": "TEXT" },
       { "name": "tags", "type": "TEXT" }
     ]
   ],
@@ -83,6 +87,30 @@
         "icon": "temp",
         "name": "Fake Modpack",
         "description": "This is a fake modpack for development purposes."
+      }
+    },
+    {
+      "table": "mods",
+      "exist_check_type": "entry",
+      "exist_check": "project_id",
+      "entry": {
+        "project_id": "AANobbMI",
+        "project_name": "Unknown",
+        "project_source": "modrinth",
+        "applied_versions": "[\">=1.20\"]",
+        "tags": "[\"Performance\",\"Rendering\"]"
+      }
+    },
+    {
+      "table": "mods",
+      "exist_check_type": "entry",
+      "exist_check": "project_id",
+      "entry": {
+        "project_id": "gvQqBUqZ",
+        "project_name": "Unknown",
+        "project_source": "modrinth",
+        "applied_versions": "[\">=1.20\"]",
+        "tags": "[\"Performance\",\"Back-End\"]"
       }
     },
     {

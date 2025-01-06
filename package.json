@@ -35,7 +35,7 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "clean": "rimraf ./dist ./web/public/css ./database.db",
+    "clean": "rimraf ./dist ./uploads ./web/public/css ./database.db",
     "ts:build": "tsc",
     "ts:watch": "tsc --watch",
     "postcss:build": "postcss --verbose ./src/styles -d ./web/public/css",

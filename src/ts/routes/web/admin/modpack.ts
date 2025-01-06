@@ -26,10 +26,11 @@ type ModpackMetadata = ModpackMetadataInfo & {
 };
 
 type ItemInfo = {
-  id: number;
-  versions: string;
   project_id: string;
   project_name: string;
+  project_source: string;
+  applied_versions: string;
+  tags: string;
 };
 
 // Constants
@@ -47,6 +48,29 @@ const EDITOR_DISPLAY_NAMES = {
   config_files: "Config Files",
 };
 
+// Helper Functions #1
+
+/**
+ * Clean items from the db to display nicer.
+ * @param items Direct database items.
+ * @returns A clean array of the same data.
+ */
+function cleanItemsData(items: ItemInfo[]): ItemInfo[] {
+  let out: ItemInfo[] = [];
+
+  for (let item of items) {
+    out.push({
+      project_id: item.project_id,
+      project_name: item.project_name,
+      project_source: item.project_source,
+      applied_versions: JSON.parse(item.applied_versions).join(", "),
+      tags: JSON.parse(item.tags).join(", "),
+    });
+  }
+
+  return out;
+}
+
 // Basic Routes
 router.get("/:edit", (req, res, next) => {
   const editors = ["mods", "resource_packs", "shader_packs", "config_files"];
@@ -58,19 +82,28 @@ router.get("/:edit", (req, res, next) => {
         db.table<ItemInfo>(req.params.edit)
           .allEntries()
           .then((items) => {
-            const ids: number[] = [];
+            const clean_items = cleanItemsData(items);
+            const ids: string[] = [];
+
             for (const item of items) {
-              ids.push(item.id);
+              ids.push(item.project_id);
             }
+
             res.render("admin/editor", {
               auth: req.auth,
               title: `MPDS Modpack Editor (${
                 EDITOR_DISPLAY_NAMES[req.params.edit]
               })`,
-              editor_id: req.params.edit,
-              editor: EDITOR_DISPLAY_NAMES[req.params.edit],
+              editor: {
+                id: req.params.edit,
+                name: EDITOR_DISPLAY_NAMES[req.params.edit],
+              },
               modpack: meta,
-              item_ids: JSON.stringify(ids),
+              items: {
+                has: items.length > 0,
+                all: clean_items,
+                ids: JSON.stringify(ids),
+              },
             });
           })
           .catch(sendPromiseCatchError(500, req, res, next));
@@ -99,7 +132,7 @@ router.get("/", (req, res, next) => {
     .catch(sendPromiseCatchError(500, req, res, next));
 });
 
-// Helper Functions
+// Helper Functions #2
 
 /**
  * Helper function to upload a new icon to the server.

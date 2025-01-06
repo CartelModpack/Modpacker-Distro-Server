@@ -3,7 +3,14 @@ import { Router } from "express";
 import { sendAPIError } from "../../../middleware/api.js";
 import { readFile } from "fs/promises";
 import { join } from "path";
+import { existsSync, mkdirSync } from "fs";
 export const router = Router();
+
+// Setup
+if (!existsSync(join(process.cwd(), "./uploads")))
+  mkdirSync(join(process.cwd(), "./uploads"));
+if (!existsSync(join(process.cwd(), "./uploads/icons")))
+  mkdirSync(join(process.cwd(), "./uploads/icons"));
 
 // Main Route
 router.get("/:id", (req, res, next) => {

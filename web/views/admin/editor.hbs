@@ -1,8 +1,14 @@
+<span
+  class="hidden"
+  id="persistant_existing"
+  data-existing="{{item.ids}}"
+></span>
+
 <div class="text-content">
   <a class="link" href="/admin"><h1>Admin Panel</h1></a>
 
   <p>Editing
-    <span class="font-bold">{{editor}}</span>
+    <span class="font-bold">{{editor.name}}</span>
     from
     <span class="font-bold">{{modpack.name}}</span>.</p>
 </div>
@@ -18,43 +24,73 @@
   </span>
   <div class="grid grid-cols-3 col-span-3 lg:col-span-7 lg:h-96">
     <div
-      class="flex overflow-auto overscroll-none flex-row lg:flex-col col-span-3 lg:col-span-1 bg-slate-100"
+      class="flex overflow-auto overscroll-none flex-row lg:flex-col col-span-3 lg:col-span-1 bg-slate-200"
       id="item_list"
     >
       <div
-        id="item_{{id}}"
-        class="flex flex-row shrink-0 p-2 h-16 lg:h-20 bg-slate-50"
+        id="no_items_indicator"
+        class="hidden flex-row h-full items-center p-2"
       >
-        <img class="h-full" src="/api/v1/icons/{{modpack.icon}}" alt="Icon" />
-        <div class="hidden lg:flex flex-col justify-between lg:ml-2">
-          <div class="flex flex-row items-center">
-            <span class="text-sm font-bold">{{modpack.name}}</span>
-            <span class="text-xs ml-2">{{modpack.version}}</span>
+        <p>No {{editor.name}} in this category.</p>
+      </div>
+      {{#each items.all}}
+        <div
+          data-item-id="{{project_id}}"
+          data-item-name="{{project_name}}"
+          data-item-versions="{{applied_versions}}"
+          data-item-tags="{{tags}}"
+          data-item-source="{{project_source}}"
+          class="flex flex-row shrink-0 p-2 h-16 lg:h-20 hover:bg-slate-50 transition-colors cursor-pointer"
+          onclick="changeDisplayItem('{{project_id}}');"
+        >
+          <img class="h-full" src="" alt="Icon" />
+          <div class="hidden lg:flex flex-col justify-between lg:ml-2">
+            <div class="flex flex-row items-center">
+              <span class="text-sm font-bold">{{project_name}}</span>
+              <span class="text-xs ml-2">{{applied_versions}}</span>
+            </div>
+            <span class="text-xs">{{tags}}</span>
+            <span class="text-xs">{{project_source}}</span>
           </div>
-          <span class="text-xs overflow-auto">{{modpack.description}}</span>
+        </div>
+      {{/each}}
+    </div>
+    <div class="col-span-3 lg:col-span-2 p-2 bg-slate-50" id="item_info">
+      <span class="hidden" id="persistant_loaded" data-loaded="none"></span>
+      <div id="visible_display_indicator">
+        <span>Select an item to display it.</span>
+      </div>
+      <div id="visible_display" class="hidden">
+        <img id="visible_icon" class="mb-2" src="" alt="Resource Icon" />
+        <p id="visible_name" class="font-bold text-lg mb-2">Item Name</p>
+        <p id="visible_description" class="mb-2">Item Description</p>
+        <p class="flex flex-row mb-2">
+          <span class="font-bold mr-4">Tags: </span>
+          <span id="visible_tags"></span>
+        </p>
+        <p class="mb-2">Versions:</p>
+        <input
+          class="input-text text-base w-full mb-2"
+          type="text"
+          id="visible_versions"
+          value="Item Versions"
+        />
+        <div class="flex flex-row">
+          <button class="button mr-2">Update</button>
+          <button class="button bg-red-500 hover:bg-red-700">Remove</button>
         </div>
       </div>
-    </div>
-    <div class="col-span-2 p-2" id="item_info">
-      <img
-        id="visible_icon"
-        class="mb-2"
-        src="/api/v1/icons/{{modpack.icon}}"
-        alt="Icon"
-      />
-      <p id="visible_name" class="font-bold text-lg mb-2">{{modpack.name}}</p>
-      <p id="visible_version" class="mb-2">{{modpack.version}}</p>
-      <p id="visible_description" class="mb-2">{{modpack.description}}</p>
     </div>
   </div>
   <div class="lg:mt-2 col-span-3 lg:col-span-7 grid grid-cols-subgrid">
     <form
       class="lg:col-start-3 col-span-3"
-      action="/admin/modpack/{{editor_id}}/update"
+      action="/admin/modpack/{{editor.id}}/update"
       method="post"
     >
       <input class="hidden" type="text" id="to_remove" value="[]" />
       <input class="hidden" type="text" id="to_add" value="[]" />
+      <input class="hidden" type="text" id="to_update" value="{}" />
       <button class="button w-full" type="submit">Submit Changes</button>
     </form>
   </div>

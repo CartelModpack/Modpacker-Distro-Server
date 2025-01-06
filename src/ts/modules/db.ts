@@ -161,6 +161,14 @@ function insertPreloadsIntoTables(): Promise<void> {
                     resolvePreload();
                   })
                   .catch(rejectPreload);
+              } else if (preload.exist_check_type === "none") {
+                db.table(preload.table)
+                  .add(preload.entry)
+                  .then(() => {
+                    console.info(`${preload.table} preload inserted.`);
+                    resolvePreload();
+                  })
+                  .catch(rejectPreload);
               } else {
                 rejectPreload(new Error("Invalid Exist Check Type"));
               }
