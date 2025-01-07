@@ -35,7 +35,9 @@
         id="no_items_indicator"
         class="hidden flex-row h-full items-center p-2"
       >
-        <p>No {{editor.name}} in this category.</p>
+        <p>No
+          <span class="font-bold">{{editor.name}}</span>
+          to display.</p>
       </div>
       {{#each items.all}}
         <div
@@ -62,7 +64,9 @@
     <div class="col-span-3 lg:col-span-2 p-2 bg-slate-50" id="item_info">
       <span class="hidden" id="persistant_loaded" data-loaded="none"></span>
       <div id="visible_display_indicator">
-        <span>Select an item to display it.</span>
+        <p>No
+          <span class="font-bold">{{editor.name}}</span>
+          to display.</p>
       </div>
       <div id="visible_display" class="hidden">
         <img id="visible_icon" class="mb-2" src="" alt="Resource Icon" />
