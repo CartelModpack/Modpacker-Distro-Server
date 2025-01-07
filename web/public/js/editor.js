@@ -45,6 +45,12 @@ const NO_ITEMS_INDICATOR = document.getElementById("no_items_indicator");
 const VISIBLE_DISPLAY_INDICATOR = document.getElementById(
   "visible_display_indicator"
 );
+/**
+ * The new item popup element.
+ * @type {HTMLDivElement}
+ */
+const NEW_ITEM_POPUP = document.getElementById("new_item_popup");
+const NEW_ITEM_INDICATOR = document.getElementById("new_item_indicator");
 
 // Visible Data
 
@@ -69,15 +75,24 @@ const VISIBLE_NAME = document.getElementById("visible_name");
  */
 const VISIBLE_VERSIONS = document.getElementById("visible_versions");
 /**
- * The visible tags when editing.
- * @type {HTMLParagraphElement}
- */
-const VISIBLE_TAGS = document.getElementById("visible_tags");
-/**
  * The visible description when editing.
  * @type {HTMLParagraphElement}
  */
 const VISIBLE_DESCRIPTION = document.getElementById("visible_description");
+
+const NEW_ITEM_ID = document.getElementById("new_item_id");
+const NEW_ITEM_SOURCE = document.getElementById("new_item_source_dd");
+const NEW_ITEM_VERSIONS = document.getElementById("new_item_vers");
+const NEW_ITEM_RAWCONTENT = document.getElementById("new_item_rawcontent");
+const NEW_ITEM_NAME = document.getElementById("new_item_name_input");
+const NEW_ITEM_RAWCONTENT_DISPLAY = document.getElementById(
+  "new_item_rawcontent_disp"
+);
+
+const NEW_ITEM_DISPLAY_ICON = document.getElementById("new_item_icon");
+const NEW_ITEM_DISPLAY_NAME = document.getElementById("new_item_name");
+const NEW_ITEM_DISPLAY_VERSIONS = document.getElementById("new_item_versions");
+const NEW_ITEM_DISPLAY_SOURCE = document.getElementById("new_item_source");
 
 // HELPER FUNCTIONS
 
@@ -99,9 +114,13 @@ function getAdditons() {
   return JSON.parse(ADDITION_LIST_INPUT.value);
 }
 /** Add a new addition ID. */
-function addAdditon(id) {
+function addAdditon(id, name, versions) {
   let items = getAdditons();
-  if (!items.includes(id)) items.push(id);
+  if (items[id] == null)
+    items[id] = {
+      name,
+      versions,
+    };
   ADDITION_LIST_INPUT.value = JSON.stringify(items);
 }
 
@@ -110,9 +129,13 @@ function getUpdates() {
   return JSON.parse(UPDATES_LIST_INPUT.value);
 }
 /** Add a new update ID. */
-function addUpdate(id, values) {
+function addUpdate(id, name, versions) {
   let items = getUpdates();
-  if (items[id] == null) items[id] = values;
+  if (items[id] == null)
+    items[id] = {
+      name,
+      versions,
+    };
   UPDATES_LIST_INPUT.value = JSON.stringify(items);
 }
 
@@ -154,8 +177,35 @@ function toggleNoItemsIndicator(value) {
   }
 }
 
+function toggleNewItemPopup(value) {
+  if (NEW_ITEM_POPUP.classList.contains("hidden")) {
+    if (value != null && !value) return;
+    NEW_ITEM_POPUP.classList.remove("hidden");
+    NEW_ITEM_ID.value = "";
+    NEW_ITEM_NAME.value = "";
+    NEW_ITEM_RAWCONTENT.value = "";
+    NEW_ITEM_SOURCE.value = "modrinth";
+    NEW_ITEM_VERSIONS.value = "";
+    NEW_ITEM_DISPLAY_ICON.src = "/api/v1/icons/temp";
+    NEW_ITEM_DISPLAY_NAME.innerHTML = "No Title";
+    NEW_ITEM_DISPLAY_SOURCE = "modrinth";
+    NEW_ITEM_DISPLAY_VERSIONS.innerHTML =
+      "[No versions specified, this will be included in ALL versions.]";
+    displayNewItemMessage();
+    displayRawFields();
+  } else {
+    if (value != null && value) return;
+    NEW_ITEM_POPUP.classList.add("hidden");
+  }
+}
+
 /** Load content from modrinth. */
 function loadResourceFromModrinth(project_id, usage, elements = {}, callback) {
+  if (project_id.trim() == "") {
+    console.error(new Error("No ID Specified."));
+    callback(false);
+    return;
+  }
   MODRINTH_API.project(project_id)
     .then((content) => {
       if (elements.icon != null) elements.icon.src = content.icon_url;
@@ -164,13 +214,27 @@ function loadResourceFromModrinth(project_id, usage, elements = {}, callback) {
         elements.description.innerHTML = content.description;
 
       if (elements.versions != null) elements.versions.value = usage.versions;
-      if (elements.tags != null) elements.tags.innerHTML = usage.tags;
-      callback();
+      if (elements.source != null) elements.source.innerHTML = "modrinth";
+      callback(true);
     })
     .catch((error) => {
       console.error(error);
-      callback();
+      callback(false);
     });
+}
+
+/** Load content from raw. */
+function loadResourceFromRaw(usage, elements = {}, callback) {
+  let content = {
+    icon_url: "/api/v1/icons/temp",
+    title: usage.name.trim() != "" ? usage.name.trim() : "No Title",
+  };
+
+  if (elements.icon != null) elements.icon.src = content.icon_url;
+  if (elements.title != null) elements.title.innerHTML = content.title;
+  if (elements.versions != null) elements.versions.value = usage.versions;
+  if (elements.source != null) elements.source.innerHTML = "raw";
+  callback(true);
 }
 
 /** Load content from a source */
@@ -183,9 +247,21 @@ function loadResourceFromSource(
 ) {
   if (source === "modrinth") {
     loadResourceFromModrinth(project_id, usage, elements, callback);
+  } else if (source === "raw") {
+    loadResourceFromRaw(usage, elements, callback);
   } else {
     console.warn("Don't know how to load this resource!");
-    callback();
+    callback(false);
+  }
+}
+
+/** Display a new item message */
+function displayNewItemMessage(msg = null) {
+  if (msg != null) {
+    NEW_ITEM_INDICATOR.innerHTML = msg;
+    NEW_ITEM_INDICATOR.classList.remove("hidden");
+  } else {
+    NEW_ITEM_INDICATOR.classList.add("hidden");
   }
 }
 
@@ -215,15 +291,17 @@ function changeDisplayItem(project_id) {
         description: VISIBLE_DESCRIPTION,
         versions: VISIBLE_VERSIONS,
       },
-      () => {
-        if (old_item != null) {
-          old_item.classList.remove("bg-slate-50");
-        }
-        new_item.classList.add("bg-slate-50");
+      (success) => {
+        if (success) {
+          if (old_item != null) {
+            old_item.classList.remove("bg-slate-50");
+          }
+          new_item.classList.add("bg-slate-50");
 
-        if (VISIBLE_DISPLAY.classList.contains("hidden")) {
-          VISIBLE_DISPLAY_INDICATOR.classList.add("hidden");
-          VISIBLE_DISPLAY.classList.remove("hidden");
+          if (VISIBLE_DISPLAY.classList.contains("hidden")) {
+            VISIBLE_DISPLAY_INDICATOR.classList.add("hidden");
+            VISIBLE_DISPLAY.classList.remove("hidden");
+          }
         }
       }
     );
@@ -252,5 +330,58 @@ function loadResourceInfo() {
   }
 }
 
+/** Load new item content. */
+function loadNewItemFromAPI() {
+  const project_id = NEW_ITEM_ID.value;
+  const project_source = NEW_ITEM_SOURCE.value;
+
+  loadResourceFromSource(
+    project_id,
+    project_source,
+    { name: NEW_ITEM_NAME.value },
+    {
+      icon: NEW_ITEM_DISPLAY_ICON,
+      title: NEW_ITEM_DISPLAY_NAME,
+      source: NEW_ITEM_DISPLAY_SOURCE,
+    },
+    (success) => {
+      if (success) {
+        displayNewItemMessage();
+        NEW_ITEM_DISPLAY_VERSIONS.innerHTML =
+          NEW_ITEM_VERSIONS.value.trim() == ""
+            ? "[No versions specified, this will be included in ALL versions.]"
+            : NEW_ITEM_VERSIONS.value.replaceAll(" ", "").split(",").join(", ");
+      } else {
+        if (project_id.trim() === "") {
+          displayNewItemMessage(`No project id specified.`);
+        } else {
+          displayNewItemMessage(
+            `Failed to load project id ${project_id} from ${project_source}.`
+          );
+        }
+      }
+    }
+  );
+}
+
+/** Display raw fields */
+function displayRawFields() {
+  if (NEW_ITEM_SOURCE.value === "raw") {
+    NEW_ITEM_RAWCONTENT_DISPLAY.classList.remove("hidden");
+  } else {
+    NEW_ITEM_RAWCONTENT_DISPLAY.classList.add("hidden");
+  }
+}
+
 // RUN ON LOAD
 loadResourceInfo();
+
+NEW_ITEM_SOURCE.addEventListener("change", displayRawFields);
+displayRawFields();
+
+NEW_ITEM_VERSIONS.addEventListener("input", () => {
+  NEW_ITEM_DISPLAY_VERSIONS.innerHTML =
+    NEW_ITEM_VERSIONS.value.trim() == ""
+      ? "[No versions specified, this will be included in ALL versions.]"
+      : NEW_ITEM_VERSIONS.value.replaceAll(" ", "").split(",").join(", ");
+});

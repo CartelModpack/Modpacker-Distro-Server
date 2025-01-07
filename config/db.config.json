@@ -42,25 +42,29 @@
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" },
+      { "name": "project_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" },
+      { "name": "project_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" },
+      { "name": "project_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" },
+      { "name": "project_content", "type": "TEXT" }
     ]
   ],
   "preloads": [
@@ -93,7 +97,8 @@
         "project_id": "AANobbMI",
         "project_name": "Unknown",
         "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]"
+        "applied_versions": "[\">=1.20\"]",
+        "project_content": ""
       }
     },
     {
@@ -104,7 +109,8 @@
         "project_id": "gvQqBUqZ",
         "project_name": "Unknown",
         "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]"
+        "applied_versions": "[\">=1.20\"]",
+        "project_content": ""
       }
     },
     {
