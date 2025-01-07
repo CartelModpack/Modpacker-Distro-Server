@@ -14,22 +14,26 @@
 </div>
 
 <div class="grid grid-cols-3 lg:grid-cols-7">
-  <a class="grid-link button-light button-active col-span-3 lg:col-span-1"><span
-    >{{editor.name}}
+  <a
+    class="grid-link button-light button-active order-2 lg:order-1 col-span-3 lg:col-span-1"
+    href="#"
+  ><span>{{editor.name}}
       (<span id="existing_count">{{items.count}}</span>)</span></a>
 
   {{#each editor.others}}
-    <a class="grid-link button-light" href="/admin/modpack/{{id}}"><span
-      >{{name}}</span></a>
+    <a
+      class="grid-link button-light order-1 lg:order-2"
+      href="/admin/modpack/{{id}}"
+    ><span>{{name}}</span></a>
   {{/each}}
 
-  <span class="hidden lg:col-span-3 lg:flex flex-row justify-end">
+  <span class="hidden order-3 lg:col-span-3 lg:flex flex-row justify-end">
     <button class="grid-link ml-2">
       <span class="absolute text-xl">+</span>
     </button>
   </span>
 
-  <div class="grid grid-cols-3 col-span-3 lg:col-span-7 lg:h-96">
+  <div class="order-4 grid grid-cols-3 col-span-3 lg:col-span-7 lg:h-96">
     <div
       class="flex overflow-auto overscroll-none flex-row lg:flex-col col-span-3 lg:col-span-1 bg-slate-200"
       id="item_list"
@@ -91,7 +95,8 @@
       </div>
     </div>
   </div>
-  <div class="lg:mt-2 col-span-3 lg:col-span-7 grid grid-cols-subgrid">
+
+  <div class="order-5 lg:mt-2 col-span-3 lg:col-span-7 grid grid-cols-subgrid">
     <form
       class="lg:col-start-3 col-span-3"
       action="/admin/modpack/{{editor.id}}/update"
