@@ -14,7 +14,7 @@ class API {
   static EXPIRES = 3 * 60 * 1000;
 
   name;
-  cache = {};
+  cache = new Map();
 
   constructor(name) {
     this.name = name;
@@ -30,20 +30,21 @@ class API {
         reject(this.getError("Invalid API", endpoint));
 
       if (
-        this.cache[endpoint] != null &&
-        this.cache[endpoint].expires.getTime() > new Date().getTime()
+        this.cache.get(endpoint) != null &&
+        this.cache.get(endpoint).expires.getTime() > new Date().getTime()
       ) {
-        resolve(this.cache[endpoint].data);
+        resolve(this.cache.get(endpoint).data);
       } else {
         fetch(`${API.ROOTS[this.name]}${endpoint}`, {
           method: "GET",
         })
           .then((res) => res.json())
           .then((json) => {
-            this.cache[endpoint] = {
+            this.cache.set(endpoint, {
               expires: new Date(new Date().getTime() + API.EXPIRES),
+              body: null,
               data: json,
-            };
+            });
             resolve(json);
           })
           .catch(reject);
@@ -56,15 +57,28 @@ class API {
       if (API.ROOTS[this.name] == null)
         reject(this.getError("Invalid API", endpoint));
 
-      fetch(`${API.ROOTS[this.name]}${endpoint}`, {
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          resolve(json);
+      if (
+        this.cache.get(endpoint) != null &&
+        this.cache.get(endpoint).body === body &&
+        this.cache.get(endpoint).expires.getTime() > new Date().getTime()
+      ) {
+        resolve(this.cache.get(endpoint).data);
+      } else {
+        fetch(`${API.ROOTS[this.name]}${endpoint}`, {
+          method: "POST",
+          body: JSON.stringify(body),
         })
-        .catch(reject);
+          .then((res) => res.json())
+          .then((json) => {
+            this.cache.set(endpoint, {
+              expires: new Date(new Date().getTime() + API.EXPIRES),
+              body,
+              data: json,
+            });
+            resolve(json);
+          })
+          .catch(reject);
+      }
     });
   }
 }
