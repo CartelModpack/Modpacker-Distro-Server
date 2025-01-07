@@ -17,15 +17,18 @@
   <a class="grid-link button-light button-active col-span-3 lg:col-span-1"><span
     >{{editor.name}}
       (<span id="existing_count">{{items.count}}</span>)</span></a>
+
   {{#each editor.others}}
     <a class="grid-link button-light" href="/admin/modpack/{{id}}"><span
       >{{name}}</span></a>
   {{/each}}
+
   <span class="hidden lg:col-span-3 lg:flex flex-row justify-end">
     <button class="grid-link ml-2">
       <span class="absolute text-xl">+</span>
     </button>
   </span>
+
   <div class="grid grid-cols-3 col-span-3 lg:col-span-7 lg:h-96">
     <div
       class="flex overflow-auto overscroll-none flex-row lg:flex-col col-span-3 lg:col-span-1 bg-slate-200"
@@ -44,18 +47,14 @@
           data-item-id="{{project_id}}"
           data-item-name="{{project_name}}"
           data-item-versions="{{applied_versions}}"
-          data-item-tags="{{tags}}"
           data-item-source="{{project_source}}"
           class="flex flex-row shrink-0 p-2 h-16 lg:h-20 hover:bg-slate-50 transition-colors cursor-pointer"
           onclick="changeDisplayItem('{{project_id}}');"
         >
           <img class="h-full" src="" alt="Icon" />
           <div class="hidden lg:flex flex-col justify-between lg:ml-2">
-            <div class="flex flex-row items-center">
-              <span class="text-sm font-bold">{{project_name}}</span>
-              <span class="text-xs ml-2">{{applied_versions}}</span>
-            </div>
-            <span class="text-xs">{{tags}}</span>
+            <span class="text-sm font-bold">{{project_name}}</span>
+            <span class="text-xs">{{applied_versions}}</span>
             <span class="text-xs">{{project_source}}</span>
           </div>
         </div>
@@ -72,10 +71,6 @@
         <img id="visible_icon" class="mb-2" src="" alt="Resource Icon" />
         <p id="visible_name" class="font-bold text-lg mb-2">Item Name</p>
         <p id="visible_description" class="mb-2">Item Description</p>
-        <p class="flex flex-row mb-2">
-          <span class="font-bold mr-4">Tags: </span>
-          <span id="visible_tags"></span>
-        </p>
         <p class="mb-2">Versions:</p>
         <input
           class="input-text text-base w-full mb-2"
@@ -104,4 +99,5 @@
   </div>
 </div>
 
+<script src="/js/api.js"></script>
 <script src="/js/editor.js"></script>

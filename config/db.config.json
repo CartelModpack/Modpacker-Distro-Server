@@ -42,29 +42,25 @@
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" },
-      { "name": "tags", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" },
-      { "name": "tags", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" },
-      { "name": "tags", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
-      { "name": "applied_versions", "type": "TEXT" },
-      { "name": "tags", "type": "TEXT" }
+      { "name": "applied_versions", "type": "TEXT" }
     ]
   ],
   "preloads": [
@@ -97,8 +93,7 @@
         "project_id": "AANobbMI",
         "project_name": "Unknown",
         "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]",
-        "tags": "[\"Performance\",\"Rendering\"]"
+        "applied_versions": "[\">=1.20\"]"
       }
     },
     {
@@ -109,8 +104,7 @@
         "project_id": "gvQqBUqZ",
         "project_name": "Unknown",
         "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]",
-        "tags": "[\"Performance\",\"Back-End\"]"
+        "applied_versions": "[\">=1.20\"]"
       }
     },
     {

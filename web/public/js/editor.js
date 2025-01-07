@@ -156,8 +156,7 @@ function toggleNoItemsIndicator(value) {
 
 /** Load content from modrinth. */
 function loadResourceFromModrinth(project_id, usage, elements = {}, callback) {
-  fetch("https://api.modrinth.com/v2/project/" + project_id)
-    .then((res) => res.json())
+  MODRINTH_API.project(project_id)
     .then((content) => {
       if (elements.icon != null) elements.icon.src = content.icon_url;
       if (elements.title != null) elements.title.innerHTML = content.title;
@@ -180,7 +179,7 @@ function loadResourceFromSource(
   source,
   usage,
   elements = {},
-  callback
+  callback = () => {}
 ) {
   if (source === "modrinth") {
     loadResourceFromModrinth(project_id, usage, elements, callback);
@@ -209,13 +208,11 @@ function changeDisplayItem(project_id) {
       project_source,
       {
         versions: new_item.dataset["itemVersions"],
-        tags: new_item.dataset["itemTags"],
       },
       {
         icon: VISIBLE_ICON,
         title: VISIBLE_NAME,
         description: VISIBLE_DESCRIPTION,
-        tags: VISIBLE_TAGS,
         versions: VISIBLE_VERSIONS,
       },
       () => {
@@ -244,7 +241,7 @@ function loadResourceInfo() {
       const project_source = item.children[1].children[2].innerHTML;
 
       const icon = item.children[0];
-      const title = item.children[1].children[0].children[0];
+      const title = item.children[1].children[0];
 
       loadResourceFromSource(project_id, project_source, {}, { icon, title });
     });

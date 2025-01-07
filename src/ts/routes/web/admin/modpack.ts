@@ -30,7 +30,6 @@ type ItemInfo = {
   project_name: string;
   project_source: string;
   applied_versions: string;
-  tags: string;
 };
 
 // Constants
@@ -43,9 +42,9 @@ const MODPACK_META_PROPERTIES: FormFieldProperties = {
 };
 const EDITOR_DISPLAY_NAMES = {
   mods: "Mods",
-  resource_packs: "Resource Packs",
+  resource_packs: "Resources",
   shader_packs: "Shaders",
-  config_files: "Config Files",
+  config_files: "Configs",
 };
 
 // Helper Functions #1
@@ -64,7 +63,6 @@ function cleanItemsData(items: ItemInfo[]): ItemInfo[] {
       project_name: item.project_name,
       project_source: item.project_source,
       applied_versions: JSON.parse(item.applied_versions).join(", "),
-      tags: JSON.parse(item.tags).join(", "),
     });
   }
 
