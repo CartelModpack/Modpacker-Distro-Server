@@ -142,6 +142,11 @@ class ModrinthAPI extends API {
     super("modrinth");
   }
 
+  /**
+   * Get a project from Modrinth.
+   * @param {string} id The Modrinth project id.
+   * @returns A promise that contains the project info. (See {@link API.get})
+   */
   project(id) {
     return this.get(`/project/${id}`);
   }
