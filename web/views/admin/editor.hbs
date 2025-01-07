@@ -14,10 +14,14 @@
 </div>
 
 <div class="grid grid-cols-3 lg:grid-cols-7">
-  <button class="grid-link button-light button-active"><span>Existing ({{items.count}})</span></button>
-  <button class="grid-link button-light"><span>New (0)</span></button>
-  <button class="grid-link button-light"><span>Removed (0)</span></button>
-  <span class="hidden lg:col-span-4 lg:flex flex-row justify-end">
+  <a class="grid-link button-light button-active col-span-3 lg:col-span-1"><span
+    >{{editor.name}}
+      (<span id="existing_count">{{items.count}}</span>)</span></a>
+  {{#each editor.others}}
+    <a class="grid-link button-light" href="/admin/modpack/{{id}}"><span
+      >{{name}}</span></a>
+  {{/each}}
+  <span class="hidden lg:col-span-3 lg:flex flex-row justify-end">
     <button class="grid-link ml-2">
       <span class="absolute text-xl">+</span>
     </button>

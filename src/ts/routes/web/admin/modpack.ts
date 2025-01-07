@@ -89,12 +89,23 @@ router.get("/:edit", (req, res, next) => {
               ids.push(item.project_id);
             }
 
+            const others: { name: string; id: string }[] = [];
+            for (const edit of editors) {
+              if (req.params.edit != edit) {
+                others.push({
+                  id: edit,
+                  name: EDITOR_DISPLAY_NAMES[edit],
+                });
+              }
+            }
+
             res.render("admin/editor", {
               auth: req.auth,
               title: `MPDS Modpack Editor (${
                 EDITOR_DISPLAY_NAMES[req.params.edit]
               })`,
               editor: {
+                others: others,
                 id: req.params.edit,
                 name: EDITOR_DISPLAY_NAMES[req.params.edit],
               },
