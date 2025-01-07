@@ -68,7 +68,10 @@
         </div>
       {{/each}}
     </div>
-    <div class="col-span-3 lg:col-span-2 p-2 bg-slate-50" id="item_info">
+    <div
+      class="col-span-3 lg:col-span-2 p-2 bg-slate-50 overflow-auto"
+      id="item_info"
+    >
       <span class="hidden" id="persistant_loaded" data-loaded="none"></span>
 
       <div id="visible_display_indicator">
@@ -80,7 +83,7 @@
       <div id="visible_display" class="hidden">
         <img
           id="visible_icon"
-          class="mb-2 rounded-md"
+          class="mb-2 rounded-md h-32"
           src=""
           alt="Resource Icon"
         />
@@ -193,7 +196,7 @@
         </div>
       </div>
     </div>
-    <button class="button m-0">Add Item</button>
+    <button class="button m-0" onclick="addNewItem();">Add Item</button>
   </div>
 </div>
 

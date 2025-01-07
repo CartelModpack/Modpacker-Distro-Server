@@ -94,6 +94,8 @@ const NEW_ITEM_DISPLAY_NAME = document.getElementById("new_item_name");
 const NEW_ITEM_DISPLAY_VERSIONS = document.getElementById("new_item_versions");
 const NEW_ITEM_DISPLAY_SOURCE = document.getElementById("new_item_source");
 
+const ITEM_LIST = document.getElementById("item_list");
+
 // HELPER FUNCTIONS
 
 // ids
@@ -223,6 +225,13 @@ function loadResourceFromModrinth(project_id, usage, elements = {}, callback) {
     });
 }
 
+function embedInTextarea(content, id) {
+  const rows = content.split("\n").length;
+  return `<textarea class="text-xs w-full input-text hover:no-underline resize-none" rows="${
+    rows < 16 ? rows : 16
+  }" id="${id}">${content}</textarea>`;
+}
+
 /** Load content from raw. */
 function loadResourceFromRaw(usage, elements = {}, callback) {
   let content = {
@@ -233,6 +242,13 @@ function loadResourceFromRaw(usage, elements = {}, callback) {
   if (elements.icon != null) elements.icon.src = content.icon_url;
   if (elements.title != null) elements.title.innerHTML = content.title;
   if (elements.versions != null) elements.versions.value = usage.versions;
+  if (elements.description != null)
+    elements.description.innerHTML = embedInTextarea(
+      usage.content != null
+        ? JSON.stringify(JSON.parse(usage.content), null, 2)
+        : "No content provided.",
+      "update_raw_content"
+    );
   if (elements.source != null) elements.source.innerHTML = "raw";
   callback(true);
 }
@@ -283,7 +299,9 @@ function changeDisplayItem(project_id) {
       project_id,
       project_source,
       {
+        name: new_item.dataset["itemName"],
         versions: new_item.dataset["itemVersions"],
+        content: new_item.dataset["itemContent"],
       },
       {
         icon: VISIBLE_ICON,
@@ -308,7 +326,7 @@ function changeDisplayItem(project_id) {
   }
 }
 
-/** Load all currently visible resource info from modrinth. */
+/** Load all currently visible resource info from the APIs. */
 function loadResourceInfo() {
   const items = document.querySelectorAll("[data-item-id]");
   if (items.length >= 1) {
@@ -371,6 +389,102 @@ function displayRawFields() {
   } else {
     NEW_ITEM_RAWCONTENT_DISPLAY.classList.add("hidden");
   }
+}
+
+// <div
+//   data-item-id="{{project_id}}"
+//   data-item-name="{{project_name}}"
+//   data-item-versions="{{applied_versions}}"
+//   data-item-source="{{project_source}}"
+//   class="flex flex-row shrink-0 p-2 h-16 lg:h-20 hover:bg-slate-50 transition-all cursor-pointer"
+//   onclick="changeDisplayItem('{{project_id}}');"
+// >
+//   <img class="h-full rounded-md" src="/api/v1/icons/temp" alt="Icon" />
+//   <div class="hidden lg:flex flex-col justify-between lg:ml-2">
+//     <span class="text-sm font-bold">{{project_name}}</span>
+//     <span class="text-xs font-mono">{{applied_versions}}</span>
+//     <span class="text-xs">{{project_source}}</span>
+//   </div>
+// </div>
+
+/** Create a new element in the item list. */
+function createNewItemInMenu(
+  project_id,
+  project_name,
+  applied_versions,
+  project_source,
+  content = null
+) {
+  // Parent Item
+  const parent_div = document.createElement("div");
+  parent_div.dataset["itemId"] = project_id;
+  parent_div.dataset["itemName"] = project_name;
+  parent_div.dataset["itemVersions"] = applied_versions;
+  parent_div.dataset["itemSource"] = project_source;
+  if (content != null) parent_div.dataset["itemContent"] = content;
+  parent_div.classList.add(
+    "flex",
+    "flex-row",
+    "shrink-0",
+    "p-2",
+    "h-16",
+    "lg:h-20",
+    "hover:bg-slate-50",
+    "transition-all",
+    "cursor-pointer"
+  );
+  parent_div.addEventListener("click", () => {
+    changeDisplayItem(project_id);
+  });
+
+  // Icon
+  const icon = document.createElement("img");
+  icon.src = "/api/v1/icons/temp";
+  icon.alt = "Icon";
+  icon.classList.add("h-full", "rounded-md");
+
+  // Meta
+  const meta = document.createElement("div");
+  meta.classList.add(
+    "hidden",
+    "lg:flex",
+    "flex-col",
+    "justify-between",
+    "lg:ml-2"
+  );
+
+  // Meta: Name
+  const name = document.createElement("span");
+  name.innerHTML = project_name;
+  name.classList.add("text-sm", "font-bold");
+
+  // Meta: Versions
+  const versions = document.createElement("span");
+  versions.innerHTML = applied_versions;
+  versions.classList.add("text-xs", "font-mono");
+
+  // Meta: Source
+  const source = document.createElement("span");
+  source.innerHTML = project_source;
+  source.classList.add("text-xs");
+
+  // Link Things Together
+  meta.appendChild(name);
+  meta.appendChild(versions);
+  meta.appendChild(source);
+
+  parent_div.appendChild(icon);
+  parent_div.appendChild(meta);
+
+  // Deploy to the list.
+  ITEM_LIST.appendChild(parent_div);
+
+  return parent_div;
+}
+
+function addNewItem() {
+  const project_id = NEW_ITEM_ID.value;
+  const project_source = NEW_ITEM_SOURCE.value;
 }
 
 // RUN ON LOAD
