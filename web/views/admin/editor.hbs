@@ -42,6 +42,7 @@
           <span class="font-bold">{{editor.name}}</span>
           to display.</p>
       </div>
+
       {{#each items.all}}
         <div
           data-item-id="{{project_id}}"
@@ -62,15 +63,19 @@
     </div>
     <div class="col-span-3 lg:col-span-2 p-2 bg-slate-50" id="item_info">
       <span class="hidden" id="persistant_loaded" data-loaded="none"></span>
+
       <div id="visible_display_indicator">
         <p>No
           <span class="font-bold">{{editor.name}}</span>
           to display.</p>
       </div>
+
       <div id="visible_display" class="hidden">
         <img id="visible_icon" class="mb-2" src="" alt="Resource Icon" />
+
         <p id="visible_name" class="font-bold text-lg mb-2">Item Name</p>
         <p id="visible_description" class="mb-2">Item Description</p>
+
         <p class="mb-2">Versions:</p>
         <input
           class="input-text text-base w-full mb-2"
@@ -78,6 +83,7 @@
           id="visible_versions"
           value="Item Versions"
         />
+
         <div class="flex flex-row">
           <button class="button mr-2">Update</button>
           <button class="button bg-red-500 hover:bg-red-700">Remove</button>

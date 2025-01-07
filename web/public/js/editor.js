@@ -201,7 +201,7 @@ function changeDisplayItem(project_id) {
       `[data-item-id="${old_project_id}"]`
     );
     const new_item = document.querySelector(`[data-item-id="${project_id}"]`);
-    const project_source = new_item.children[1].children[2].innerHTML;
+    const project_source = new_item.dataset["itemSource"];
 
     loadResourceFromSource(
       project_id,
@@ -238,7 +238,7 @@ function loadResourceInfo() {
 
     items.forEach((item) => {
       const project_id = item.dataset["itemId"];
-      const project_source = item.children[1].children[2].innerHTML;
+      const project_source = item.dataset["itemSource"];
 
       const icon = item.children[0];
       const title = item.children[1].children[0];
