@@ -115,7 +115,13 @@ class Editor {
    */
   setItems(...items) {
     return new Promise((resolve, reject) => {
+      if (items.length === 0) {
+        this.render();
+        resolve();
+      }
+
       let done = 0;
+
       for (let item of items) {
         this.cleanNewItemData(item, (error, item) => {
           if (error == null) {
@@ -158,6 +164,11 @@ class Editor {
    */
   removeItems(...ids) {
     return new Promise((resolve, reject) => {
+      if (ids.length === 0) {
+        this.render();
+        resolve();
+      }
+
       let done = 0;
 
       for (let id of ids) {
@@ -300,14 +311,14 @@ class Editor {
     const itemList = document.getElementById("item_list");
     const noItemIndicator = document.getElementById("no_items_indicator");
 
-    itemList.innerHTML = "";
-
     if (this.items.size <= 0) {
       noItemIndicator.classList.remove("hidden");
       return;
     } else {
       noItemIndicator.classList.add("hidden");
     }
+
+    itemList.innerHTML = "";
 
     for (const [id, item] of this.items) {
       if (this.verbose) console.debug(`Rendering list item ${id}...`);
@@ -344,6 +355,7 @@ class Editor {
         "hover:no-underline"
       );
       textarea.innerHTML = text;
+      textarea.id = "visible_raw_data";
       return textarea;
     }
     /**
@@ -351,9 +363,19 @@ class Editor {
      * @param {string} text The text to encapsulate.
      */
     function encapsulateInNothing(text) {
+      const root = document.createElement("div");
+
+      const ta = document.createElement("textarea");
+      ta.classList.add("hidden");
+      ta.id = "visible_raw_data";
+
       const span = document.createElement("span");
       span.innerHTML = text;
-      return span;
+
+      root.appendChild(ta);
+      root.appendChild(span);
+
+      return root;
     }
 
     if (this.verbose) console.debug("Rendering visible item...");
