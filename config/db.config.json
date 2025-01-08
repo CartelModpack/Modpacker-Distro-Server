@@ -41,30 +41,34 @@
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_author", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
       { "name": "applied_versions", "type": "TEXT" },
-      { "name": "project_content", "type": "TEXT" }
+      { "name": "raw_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_author", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
       { "name": "applied_versions", "type": "TEXT" },
-      { "name": "project_content", "type": "TEXT" }
+      { "name": "raw_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_author", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
       { "name": "applied_versions", "type": "TEXT" },
-      { "name": "project_content", "type": "TEXT" }
+      { "name": "raw_content", "type": "TEXT" }
     ],
     [
       { "name": "project_id", "type": "TEXT", "isPrimaryKey": true },
       { "name": "project_name", "type": "TEXT" },
+      { "name": "project_author", "type": "TEXT" },
       { "name": "project_source", "type": "TEXT" },
       { "name": "applied_versions", "type": "TEXT" },
-      { "name": "project_content", "type": "TEXT" }
+      { "name": "raw_content", "type": "TEXT" }
     ]
   ],
   "preloads": [
@@ -96,9 +100,10 @@
       "entry": {
         "project_id": "AANobbMI",
         "project_name": "Unknown",
+        "project_author": "Unknown",
         "project_source": "modrinth",
         "applied_versions": "[\">=1.20\"]",
-        "project_content": ""
+        "raw_content": ""
       }
     },
     {
@@ -108,9 +113,10 @@
       "entry": {
         "project_id": "gvQqBUqZ",
         "project_name": "Unknown",
+        "project_author": "Unknown",
         "project_source": "modrinth",
         "applied_versions": "[\">=1.20\"]",
-        "project_content": ""
+        "raw_content": ""
       }
     },
     {

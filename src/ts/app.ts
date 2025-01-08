@@ -39,12 +39,6 @@ app.use(express.static(join(process.cwd(), "./web/public")));
 app.use(cookieParser());
 app.use(processAuthToken);
 app.use(processMessages);
-app.use(
-  hookIntoPackage(
-    "uuid",
-    join(process.cwd(), "./node_modules/uuid/dist/esm-browser")
-  )
-);
 
 // Routes
 app.use(routerMaster);

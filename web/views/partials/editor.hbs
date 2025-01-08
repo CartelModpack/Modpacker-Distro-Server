@@ -1,0 +1,182 @@
+<div
+  id="editor"
+  data-items="{{items}}"
+  data-user="{{auth.session.username}}"
+  class="grid grid-cols-3 lg:grid-cols-7 mb-0"
+>
+  <a
+    class="grid-link button-light button-active order-2 lg:order-1 col-span-2 lg:col-span-1"
+    href="#"
+  ><span>{{editor.name}}
+      (<span id="existing_count">0</span>)</span></a>
+
+  {{#each editor.others}}
+    <a
+      class="grid-link button-light order-1 lg:order-2"
+      href="/admin/modpack/{{id}}"
+    ><span>{{name}}</span></a>
+  {{/each}}
+
+  <span class="order-3 col-span-1 lg:col-span-3 flex flex-row justify-end">
+    <button id="new_item_btn" class="grid-link lg:ml-2 w-full lg:w-fit">
+      <span class="absolute text-xl">+</span>
+    </button>
+  </span>
+
+  <div class="order-4 grid grid-cols-3 col-span-3 lg:col-span-7 lg:h-96">
+    <div class="flex flex-col w-full col-span-3 lg:col-span-1 bg-slate-200">
+      <div id="no_items_indicator" class="hidden flex-row items-center p-2">
+        <p>No
+          <span class="font-bold">{{editor.name}}</span>
+          to display.</p>
+      </div>
+
+      <div
+        class="flex overflow-auto overscroll-none flex-row lg:flex-col w-full max-h-96"
+        id="item_list"
+      >
+      </div>
+    </div>
+    <div
+      class="col-span-3 lg:col-span-2 p-2 bg-slate-50 overflow-auto"
+      id="item_info"
+    >
+      <div id="visible_display" class="hidden">
+        <img
+          id="visible_icon"
+          class="mb-2 rounded-md h-32"
+          src=""
+          alt="Resource Icon"
+        />
+
+        <p class="font-bold text-lg mb-2 flex flex-row items-center">
+          <span id="visible_name">Item Name</span>
+          <span id="visible_author" class="text-sm font-normal ml-3">Item Author</span>
+        </p>
+        <p id="visible_description" class="mb-2">Item Description</p>
+
+        <p class="mb-2">Versions:</p>
+        <input
+          class="input-text text-base w-full mb-2 hover:no-underline"
+          type="text"
+          id="visible_versions"
+          value="Item Versions"
+          placeholder="Leave blank for all versions."
+        />
+
+        <div class="flex flex-row">
+          <button id="visible_update_btn" class="button mr-2">Update</button>
+          <button
+            id="visible_remove_btn"
+            class="button bg-red-500 hover:bg-red-700"
+          >Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="order-5 lg:mt-2 col-span-3 lg:col-span-7 grid grid-cols-subgrid">
+    <form
+      class="lg:col-start-3 col-span-3"
+      action="/admin/modpack/{{editor.id}}/update"
+      method="post"
+    >
+      <input class="hidden" type="text" id="to_remove" value="[]" />
+      <input class="hidden" type="text" id="to_add" value="{}" />
+      <input class="hidden" type="text" id="to_update" value="{}" />
+      <button class="button w-full" type="submit">Submit Changes</button>
+    </form>
+  </div>
+</div>
+
+<div id="new_item_popup" class="hidden">
+  <div class="fixed left-0 top-0 w-screen h-screen bg-black opacity-10"></div>
+  <div
+    class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-content p-4 my-2 bg-white w-11/12 lg:w-1/2 max-h-96 lg:max-h-none overflow-auto rounded-md"
+  >
+    <div class="flex flex-row justify-between items-center">
+      <h2 class="m-0">Add New {{editor.name}}</h2>
+      <button
+        class="button bg-red-500 hover:bg-red-700 m-0 py-1 px-2 h-full"
+        id="close_new_item"
+      >X</button>
+    </div>
+
+    <hr />
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <p class="order-1 m-0">Project ID<span class="text-red-500">*</span></p>
+      <p class="order-2 lg:order-1 m-0">Project Source</p>
+      <p class="order-3 lg:order-1 m-0">Versions</p>
+      <input
+        class="order-1 lg:order-2 input-text hover:no-underline m-0"
+        type="text"
+        id="new_item_id_input"
+        placeholder="LOCAL ONLY: Leave blank to gen."
+      />
+      <select
+        id="new_item_source_input"
+        class="order-2 lg:order-2 input-text bg-white m-0"
+        value="modrinth"
+      >
+        <option value="modrinth">Modrinth</option>
+        <option value="raw">Local Content</option>
+      </select>
+      <input
+        class="order-3 lg:order-2 input-text hover:no-underline m-0"
+        type="text"
+        id="new_item_vers_input"
+        placeholder="Leave blank for ALL"
+      />
+      <div
+        id="new_item_rawcontent_disp"
+        class="hidden order-4 lg:col-span-3 m-0"
+      >
+        <p>Title</p>
+        <input id="new_item_name_input" class="input-text w-full" type="text" />
+        <p>Raw Content</p>
+        <textarea
+          class="input-text m-0 w-full text-base resize-none hover:no-underline"
+          rows="10"
+          id="new_item_rawcontent_input"
+        ></textarea>
+      </div>
+    </div>
+    <button class="button" id="new_item_preview_btn">Load From API</button>
+    <hr />
+    <div class="m-0">
+      <p
+        class="hidden py-1 px-2 border-yellow-300 border-2 bg-yellow-100 w-fit rounded-md"
+        id="new_item_indicator"
+      >Successfull</p>
+      <div
+        class="flex flex-row shrink-0 p-2 h-20 lg:w-1/2 bg-slate-50 transition-colors rounded-md"
+      >
+        <img
+          class="h-full rounded-md m-0"
+          src="/api/v1/icons/temp"
+          alt="New Item Icon"
+          id="new_item_icon"
+        />
+        <div class="flex flex-col justify-between h-full ml-2">
+          <span class="text-sm font-bold m-0 flex flex-row items-end">
+            <span id="new_item_name" class="m-0">{{editor.name}} Item</span>
+            <span
+              id="new_item_author"
+              class="m-0 ml-3 text-xs font-normal"
+            >Author</span>
+          </span>
+          <span
+            id="new_item_versions"
+            class="text-xs font-mono m-0"
+          >[Versions]</span>
+          <span id="new_item_source" class="text-xs m-0">Source</span>
+        </div>
+      </div>
+    </div>
+    <button
+      disabled
+      id="add_item_btn"
+      class="button m-0 disabled:bg-slate-300"
+    >Add Item</button>
+  </div>
+</div>

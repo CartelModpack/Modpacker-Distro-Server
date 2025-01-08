@@ -145,10 +145,19 @@ class ModrinthAPI extends API {
   /**
    * Get a project from Modrinth.
    * @param {string} id The Modrinth project id.
-   * @returns A promise that contains the project info. (See {@link API.get})
+   * @returns {Promise<object>} A promise that contains the project info. (See {@link API.get})
    */
   project(id) {
     return this.get(`/project/${id}`);
+  }
+
+  /**
+   * Get project authors from Modrinth.
+   * @param {string} id The Modrinth project id.
+   * @returns {Promise<object>} A promise that contains the project authors info. (See {@link API.get})
+   */
+  authors(id) {
+    return this.get(`/project/${id}/members`);
   }
 }
 const MODRINTH_API = new ModrinthAPI();

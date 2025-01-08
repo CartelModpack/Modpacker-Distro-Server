@@ -25,11 +25,24 @@ type ModpackMetadata = ModpackMetadataInfo & {
   icon: string;
 };
 
+/** Item Info */
 type ItemInfo = {
   project_id: string;
   project_name: string;
+  project_author: string;
   project_source: string;
   applied_versions: string;
+  raw_content: string;
+};
+
+/** Item Info */
+type CleanItemInfo = {
+  project_id: string;
+  project_name: string;
+  project_author: string;
+  project_source: string;
+  applied_versions: string[];
+  raw_content: string;
 };
 
 // Constants
@@ -40,6 +53,7 @@ const MODPACK_META_PROPERTIES: FormFieldProperties = {
   name: "string",
   description: "string",
 };
+/** Display names for the editors. */
 const EDITOR_DISPLAY_NAMES = {
   mods: "Mods",
   resource_packs: "Resources",
@@ -47,23 +61,12 @@ const EDITOR_DISPLAY_NAMES = {
   config_files: "Configs",
 };
 
-// Helper Functions #1
+// Helpers #1
+function getCleanItemInfo(raws: ItemInfo[]): CleanItemInfo[] {
+  let out: CleanItemInfo[] = [];
 
-/**
- * Clean items from the db to display nicer.
- * @param items Direct database items.
- * @returns A clean array of the same data.
- */
-function cleanItemsData(items: ItemInfo[]): ItemInfo[] {
-  let out: ItemInfo[] = [];
-
-  for (let item of items) {
-    out.push({
-      project_id: item.project_id,
-      project_name: item.project_name,
-      project_source: item.project_source,
-      applied_versions: JSON.parse(item.applied_versions).join(", "),
-    });
+  for (let raw of raws) {
+    out.push({ ...raw, applied_versions: JSON.parse(raw.applied_versions) });
   }
 
   return out;
@@ -80,13 +83,6 @@ router.get("/:edit", (req, res, next) => {
         db.table<ItemInfo>(req.params.edit)
           .allEntries()
           .then((items) => {
-            const clean_items = cleanItemsData(items);
-            const ids: string[] = [];
-
-            for (const item of items) {
-              ids.push(item.project_id);
-            }
-
             const others: { name: string; id: string }[] = [];
             for (const edit of editors) {
               if (req.params.edit != edit) {
@@ -96,6 +92,8 @@ router.get("/:edit", (req, res, next) => {
                 });
               }
             }
+
+            const cleaned = getCleanItemInfo(items);
 
             res.render("admin/editor", {
               auth: req.auth,
@@ -108,12 +106,7 @@ router.get("/:edit", (req, res, next) => {
                 name: EDITOR_DISPLAY_NAMES[req.params.edit],
               },
               modpack: meta,
-              items: {
-                count: items.length,
-                has: items.length > 0,
-                all: clean_items,
-                ids: JSON.stringify(ids),
-              },
+              items: JSON.stringify(cleaned),
             });
           })
           .catch(sendPromiseCatchError(500, req, res, next));
