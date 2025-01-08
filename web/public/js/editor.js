@@ -43,19 +43,22 @@ class Editor {
       .addEventListener("click", this.handleNewItemPopup(false));
     document
       .getElementById("new_item_source_input")
-      .addEventListener("change", this.handleNewItemRawFieldToggle);
+      .addEventListener("change", this.handleNewItemRawFieldToggle());
     document
       .getElementById("new_item_preview_btn")
       .addEventListener("click", this.handleSeeNewItemPreview());
     document
       .getElementById("add_item_btn")
       .addEventListener("click", this.handleCreateNewItem());
+    document
+      .getElementById("visible_remove_btn")
+      .addEventListener("click", this.handleRemoveItem());
 
     // Load data into editor.
     const jsonItems = JSON.parse(this.editorElement.dataset["items"]);
     this.setItems(...jsonItems).then(() => {
+      this.setCurrentItem(this.items.keys().toArray()[0]); // Load first loaded item.
       console.info("Done");
-      this.render();
     });
   }
 
@@ -188,7 +191,7 @@ class Editor {
    * @param {string} id The item id.
    */
   setCurrentItem(id) {
-    if (this.items.has(id)) {
+    if (this.items.has(id) || id == null) {
       if (this.currentItem != id) {
         console.info(`Changing display to ${id}...`);
 
@@ -273,11 +276,14 @@ class Editor {
 
       // Meta: Name + Author
       const info = document.createElement("span");
-      info.classList.add("text-sm", "flex", "flex-row", "items-center");
+      info.classList.add("flex", "flex-row", "items-center");
 
       const name = document.createElement("span");
       name.innerHTML = item.project_name;
-      name.classList.add("font-bold");
+
+      const nameSize = item.project_name.length > 16 ? "text-xs" : "text-sm";
+
+      name.classList.add(nameSize, "font-bold", "object-scale-down");
 
       const author = document.createElement("span");
       author.innerHTML = item.project_author;
@@ -311,14 +317,14 @@ class Editor {
     const itemList = document.getElementById("item_list");
     const noItemIndicator = document.getElementById("no_items_indicator");
 
+    itemList.innerHTML = "";
+
     if (this.items.size <= 0) {
       noItemIndicator.classList.remove("hidden");
       return;
     } else {
       noItemIndicator.classList.add("hidden");
     }
-
-    itemList.innerHTML = "";
 
     for (const [id, item] of this.items) {
       if (this.verbose) console.debug(`Rendering list item ${id}...`);
@@ -601,15 +607,20 @@ class Editor {
     };
   }
 
-  /** Handle enabling raw data fields when switching data. */
+  /**
+   * Handle enabling raw data fields when switching data.
+   * @returns {(event: InputEvent) => void} An event handler for a "change" event.
+   */
   handleNewItemRawFieldToggle() {
-    document
-      .getElementById("new_item_rawcontent_disp")
-      .classList[
-        document.getElementById("new_item_source_input").value === "raw"
-          ? "remove"
-          : "add"
-      ]("hidden");
+    return () => {
+      document
+        .getElementById("new_item_rawcontent_disp")
+        .classList[
+          document.getElementById("new_item_source_input").value === "raw"
+            ? "remove"
+            : "add"
+        ]("hidden");
+    };
   }
 
   /**
@@ -649,7 +660,7 @@ class Editor {
 
       if (newIdValue.value.trim() === "" && newSourceValue !== "raw") {
         document.getElementById("add_item_btn").disabled = true;
-        sayMessage("ID is required if not local file.");
+        sayMessage("ID is required if not local resource.");
         return;
       }
 
@@ -776,6 +787,20 @@ class Editor {
           console.error(error);
         }
       });
+    };
+  }
+
+  /**
+   * Handle removing an item.
+   * @returns {(event: MouseEvent) => void} An event handler for a "click" event.
+   */
+  handleRemoveItem() {
+    return () => {
+      if (this.currentItem != null) {
+        const currentItem = this.currentItem;
+        this.setCurrentItem(null);
+        this.removeItems(currentItem);
+      }
     };
   }
 }
