@@ -82,9 +82,21 @@
       action="/admin/modpack/{{editor.id}}/update"
       method="post"
     >
-      <input class="hidden" type="text" id="to_remove" value="[]" />
-      <input class="hidden" type="text" id="to_add" value="[]" />
-      <input class="hidden" type="text" id="to_update" value="[]" />
+      <input
+        class="hidden"
+        type="text"
+        name="to_remove"
+        id="to_remove"
+        value="[]"
+      />
+      <input class="hidden" type="text" name="to_add" id="to_add" value="[]" />
+      <input
+        class="hidden"
+        type="text"
+        name="to_update"
+        id="to_update"
+        value="[]"
+      />
       <button class="button w-full" type="submit">Submit Changes</button>
     </form>
   </div>

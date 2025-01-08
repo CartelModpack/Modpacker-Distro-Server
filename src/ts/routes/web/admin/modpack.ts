@@ -7,6 +7,7 @@ import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import formidable from "formidable";
 import semver from "semver";
+import { sendAPIError, sendAPIResponse } from "../../middleware/api.js";
 
 // Make Router
 export const router = Router();
@@ -61,6 +62,8 @@ const EDITOR_DISPLAY_NAMES = {
   config_files: "Configs",
 };
 
+const EDITORS = ["mods", "resource_packs", "shader_packs", "config_files"];
+
 // Helpers #1
 function getCleanItemInfo(raws: ItemInfo[]): CleanItemInfo[] {
   let out: CleanItemInfo[] = [];
@@ -74,8 +77,7 @@ function getCleanItemInfo(raws: ItemInfo[]): CleanItemInfo[] {
 
 // Basic Routes
 router.get("/:edit", (req, res, next) => {
-  const editors = ["mods", "resource_packs", "shader_packs", "config_files"];
-  if (editors.includes(req.params.edit)) {
+  if (EDITORS.includes(req.params.edit)) {
     db.table<ModpackMetadata>("modpack")
       .allEntries()
       .then((metas) => {
@@ -84,7 +86,7 @@ router.get("/:edit", (req, res, next) => {
           .allEntries()
           .then((items) => {
             const others: { name: string; id: string }[] = [];
-            for (const edit of editors) {
+            for (const edit of EDITORS) {
               if (req.params.edit != edit) {
                 others.push({
                   id: edit,
@@ -232,6 +234,74 @@ router.post("/update", (req, res, next) => {
         .catch(sendPromiseCatchError(500, req, res, next));
     })
     .catch(sendPromiseCatchError(500, req, res, next));
+});
+
+type UpdateItemForm = { to_add: string; to_remove: string; to_update: string };
+type ItemUpdates = {
+  additions: CleanItemInfo[];
+  removals: CleanItemInfo[];
+  updates: CleanItemInfo[];
+};
+
+router.post("/:edit/update", (req, res, next) => {
+  if (EDITORS.includes(req.params.edit)) {
+    getFormData<UpdateItemForm>(req, {
+      to_add: "string",
+      to_remove: "string",
+      to_update: "string",
+    })
+      .then(({ fields }) => {
+        const items: ItemUpdates = {
+          additions: JSON.parse(fields.to_add),
+          removals: JSON.parse(fields.to_remove),
+          updates: JSON.parse(fields.to_update),
+        };
+
+        let promises: Promise<void>[] = [];
+
+        // Removals
+        for (let item of items.removals) {
+          promises.push(
+            new Promise((resolve, reject) => {
+              db.table<ItemInfo>(req.params.edit)
+                .delete("project_id", `"${item.project_id}"`)
+                .then(resolve)
+                .catch(reject);
+            })
+          );
+        }
+
+        // Additions
+        for (let item of items.additions) {
+          promises.push(
+            new Promise((resolve, reject) => {
+              let fixed: ItemInfo = {
+                ...item,
+                applied_versions: JSON.stringify(item.applied_versions),
+              };
+
+              db.table<ItemInfo>(req.params.edit)
+                .add(fixed)
+                .then(() => {
+                  resolve();
+                })
+                .catch(reject);
+            })
+          );
+        }
+
+        // Updates (Requires DB update, will do later...)
+
+        Promise.all(promises)
+          .then(() => {
+            res.redirect(`/admin/modpack/${req.params.edit}`);
+          })
+          .catch(sendPromiseCatchError(500, req, res, next));
+      })
+      .catch(sendPromiseCatchError(500, req, res, next));
+  } else {
+    next(404);
+  }
 });
 
 // Export Router
