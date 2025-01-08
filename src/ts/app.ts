@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import { processAuthToken } from "./routes/middleware/auth.js";
 import processWebError from "./routes/middleware/error.js";
 import { processMessages } from "./routes/middleware/msg.js";
+import hookIntoPackage from "./routes/middleware/node.js";
 
 // Load DB
 await loadDatabase();
@@ -38,6 +39,12 @@ app.use(express.static(join(process.cwd(), "./web/public")));
 app.use(cookieParser());
 app.use(processAuthToken);
 app.use(processMessages);
+app.use(
+  hookIntoPackage(
+    "uuid",
+    join(process.cwd(), "./node_modules/uuid/dist/esm-browser")
+  )
+);
 
 // Routes
 app.use(routerMaster);
