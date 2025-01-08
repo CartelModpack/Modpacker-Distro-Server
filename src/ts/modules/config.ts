@@ -11,11 +11,13 @@ console.info(`Starting program in "${runtimeEnv}" environment`);
 
 export interface Config {
   node_env: RuntimeEnvironments;
+  use_memory_db: boolean;
   port: number;
 }
 
 export const config: Config = {
   node_env: runtimeEnv,
+  use_memory_db: process.env.USE_MEMORY_DB === "true",
   port:
     process.env.PORT != null
       ? Number(process.env.PORT)

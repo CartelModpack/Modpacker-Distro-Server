@@ -1,6 +1,7 @@
 import Database, { TableColumnSettings } from "@gavinhsmith/simpledb";
 import { join } from "path";
 import dbConfig from "../../../config/db.config.json" with {type: "json"};
+import config from "./config.js";
 
 let tables = <string[]>dbConfig.tables;
 let configs = <TableColumnSettings[][]>dbConfig.configs;
@@ -45,7 +46,7 @@ export function verifyCondition<T>(
 }
 
 /** Database object to make requests to. */
-export const db = new Database(join(process.cwd(), "database.db"));
+export const db = new Database(config.use_memory_db ? "memory" : join(process.cwd(), "database.db"));
 export default db;
 
 /** Create/load all tables. */

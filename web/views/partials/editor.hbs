@@ -1,6 +1,7 @@
 <div
   id="editor"
   data-items="{{items}}"
+  data-original-items="{{items}}"
   data-user="{{auth.session.username}}"
   class="grid grid-cols-3 lg:grid-cols-7 mb-0"
 >
@@ -82,8 +83,8 @@
       method="post"
     >
       <input class="hidden" type="text" id="to_remove" value="[]" />
-      <input class="hidden" type="text" id="to_add" value="{}" />
-      <input class="hidden" type="text" id="to_update" value="{}" />
+      <input class="hidden" type="text" id="to_add" value="[]" />
+      <input class="hidden" type="text" id="to_update" value="[]" />
       <button class="button w-full" type="submit">Submit Changes</button>
     </form>
   </div>

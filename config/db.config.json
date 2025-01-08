@@ -98,25 +98,12 @@
       "exist_check_type": "entry",
       "exist_check": "project_id",
       "entry": {
-        "project_id": "AANobbMI",
-        "project_name": "Unknown",
-        "project_author": "Unknown",
+        "project_id": "P7dR8mSH",
+        "project_name": "Fabric API",
+        "project_author": "modmuss50",
         "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]",
-        "raw_content": ""
-      }
-    },
-    {
-      "table": "mods",
-      "exist_check_type": "entry",
-      "exist_check": "project_id",
-      "entry": {
-        "project_id": "gvQqBUqZ",
-        "project_name": "Unknown",
-        "project_author": "Unknown",
-        "project_source": "modrinth",
-        "applied_versions": "[\">=1.20\"]",
-        "raw_content": ""
+        "applied_versions": "[]",
+        "raw_content": "Lightweight and modular API providing common hooks and intercompatibility measures utilized by mods using the Fabric toolchain."
       }
     },
     {

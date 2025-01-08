@@ -53,6 +53,9 @@ class Editor {
     document
       .getElementById("visible_remove_btn")
       .addEventListener("click", this.handleRemoveItem());
+    document
+      .getElementById("visible_update_btn")
+      .addEventListener("click", this.handleUpdateItem());
 
     // Load data into editor.
     const jsonItems = JSON.parse(this.editorElement.dataset["items"]);
@@ -143,7 +146,7 @@ class Editor {
                   done++;
 
                   if (done === items.length) {
-                    this.editorElement.dataset["items"] = this.JSONify();
+                    this.updateSendingInfo();
                     this.render();
                     resolve();
                   }
@@ -166,7 +169,7 @@ class Editor {
    * @returns {Promise<void>} A promise that resolves when all items are deleted.
    */
   removeItems(...ids) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       if (ids.length === 0) {
         this.render();
         resolve();
@@ -179,6 +182,7 @@ class Editor {
         done++;
 
         if (done === ids.length) {
+          this.updateSendingInfo();
           this.render();
           resolve();
         }
@@ -202,6 +206,75 @@ class Editor {
     } else {
       throw new Error("Not a valid item.");
     }
+  }
+
+  /** Update the data in the submission form to match the editor. */
+  updateSendingInfo() {
+    this.editorElement.dataset["items"] = this.JSONify();
+
+    const ogItems = JSON.parse(this.editorElement.dataset["originalItems"]);
+    const allItems = JSON.parse(this.JSONify());
+
+    /**
+     * Checks if all properties on two objects are the same.
+     * @param {object} item1 The first object.
+     * @param {object} item2 The second object.
+     * @param {string[] | null} properties The properties to check. Defaults to the keys of `item1`.
+     * @returns If all properties match on the items.
+     */
+    function allPropsMatch(item1, item2, properties = null) {
+      if (properties === null) properties = Object.keys(item1);
+
+      for (let prop of properties) {
+        if (item1[prop] != item2[prop]) return false;
+      }
+      return true;
+    }
+
+    /**
+     * Filter to get all items that are in the given list. Checks using `project_id` by default.
+     * @param {Item[]} list The list to check against.
+     * @param {string[]} properties All properties to verify.
+     * @returns {(item: Item) => boolean} A usable filter function for `Array.filter()`.
+     */
+    function allInList(list, properties = ["project_id"]) {
+      return (item) => {
+        for (let listItem of list) {
+          if (allPropsMatch(listItem, item, properties)) return true;
+        }
+        return false;
+      };
+    }
+
+    /**
+     * Filter to get all items that are **NOT** in the given list. Checks using `project_id` by default.
+     * @param {Item[]} list The list to check against.
+     * @param {string[]} properties All properties to verify.
+     * @returns {(item: Item) => boolean} A usable filter function for `Array.filter()`.
+     */
+    function allNotInList(list, properties = ["project_id"]) {
+      return (item) => {
+        return !allInList(list, properties)(item);
+      };
+    }
+
+    const removedItems = ogItems.filter(allNotInList(allItems));
+    const newItems = allItems.filter(allNotInList(ogItems));
+    const updatedItems = allItems.filter((item) => {
+      for (let ogItem of ogItems) {
+        if (ogItem.project_id === item.project_id) {
+          return (
+            JSON.stringify(ogItem.applied_versions.sort()) !=
+            JSON.stringify(item.applied_versions.sort())
+          );
+        }
+      }
+      return false;
+    });
+
+    document.getElementById("to_remove").value = JSON.stringify(removedItems);
+    document.getElementById("to_add").value = JSON.stringify(newItems);
+    document.getElementById("to_update").value = JSON.stringify(updatedItems);
   }
 
   // Rendering
@@ -800,6 +873,30 @@ class Editor {
         const currentItem = this.currentItem;
         this.setCurrentItem(null);
         this.removeItems(currentItem);
+      }
+    };
+  }
+
+  /**
+   * Handle updating an item.
+   * @returns {(event: MouseEvent) => void} An event handler for a "click" event.
+   */
+  handleUpdateItem() {
+    return () => {
+      if (this.currentItem != null) {
+        const displayVersions = document.getElementById("visible_versions");
+
+        const applied_versions =
+          displayVersions.value.trim() == ""
+            ? []
+            : displayVersions.value.trim().replaceAll(" ", "").split(",");
+
+        const newVers = {
+          ...this.items.get(this.currentItem),
+          applied_versions,
+        };
+
+        this.setItems(newVers);
       }
     };
   }
