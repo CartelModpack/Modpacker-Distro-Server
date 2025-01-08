@@ -99,6 +99,7 @@ router.get("/:edit", (req, res, next) => {
 
             res.render("admin/editor", {
               auth: req.auth,
+
               title: `MPDS Modpack Editor (${
                 EDITOR_DISPLAY_NAMES[req.params.edit]
               })`,
@@ -109,6 +110,7 @@ router.get("/:edit", (req, res, next) => {
               },
               modpack: meta,
               items: JSON.stringify(cleaned),
+              popups: req.messages,
             });
           })
           .catch(sendPromiseCatchError(500, req, res, next));
@@ -294,7 +296,11 @@ router.post("/:edit/update", (req, res, next) => {
 
         Promise.all(promises)
           .then(() => {
-            res.redirect(`/admin/modpack/${req.params.edit}`);
+            res.redirect(
+              `/admin/modpack/${req.params.edit}/?msg={"type":"info","text":"${
+                EDITOR_DISPLAY_NAMES[req.params.edit]
+              } updated!"}`
+            );
           })
           .catch(sendPromiseCatchError(500, req, res, next));
       })
